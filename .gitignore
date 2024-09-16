@@ -23,3 +23,7 @@ go.work.sum
 
 # env file
 .env
+
+# Remove database folder
+data/
+database.db
