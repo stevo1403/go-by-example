@@ -13,6 +13,6 @@ type Comment struct {
 	PostID    int `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
 	Post      post.Post
 	Body      string
-	upvotes   int
-	downvotes int
+	UpVotes   int
+	DownVotes int
 }

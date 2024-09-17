@@ -14,3 +14,7 @@ type User struct {
 	Phone     string
 	Password  string
 }
+
+func (u User) GetFullName() string {
+	return u.FirstName + " " + u.LastName
+}

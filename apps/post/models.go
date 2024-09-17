@@ -9,6 +9,6 @@ type Post struct {
 	gorm.Model
 	Title    string
 	Body     string
-	AuthorID int `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
-	Author   user.User
+	AuthorID int       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
+	Author   user.User // Todo: Change this to allow multiple author per posts
 }
