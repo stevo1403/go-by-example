@@ -23,14 +23,14 @@ The following endpoints are available for consumption:
 | POST          | `/users`                  |
 | GET           | `/users/:id`              |
 | PUT           | `/users/:id`              |
-|               |                           |
 | DELETE        | `/users/:id`              |
+|    ---        |     ---                   |
 | GET           | `/post`                   |
 | POST          | `/post`                   |
 | GET           | `/post/:id`               |
 | PUT           | `/post/:id`               |
 | DELETE        | `/post/:id`               |
-|               |                           |
+|    ---        |     ---                   |
 | GET           | `/comment`                |
 | POST          | `/comment`                |
 | GET           | `/comment/:id`            |
