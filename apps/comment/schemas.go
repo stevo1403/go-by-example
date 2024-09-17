@@ -27,7 +27,7 @@ func (c Comment) to_schema() CommentOutSchema {
 	return CommentOutSchema{
 		ID:         c.ID,
 		AuthorID:   c.AuthorID,
-		AuthorName: c.Author.FirstName + " " + c.Author.LastName,
+		AuthorName: c.Author.GetUserByID(c.AuthorID).GetFullName(),
 		PostID:     c.PostID,
 		Body:       c.Body,
 		UpVotes:    c.UpVotes,
@@ -38,11 +38,9 @@ func (c Comment) to_schema() CommentOutSchema {
 // Convert `CommentSchema` to `Comment` object
 func (_s *CommentSchema) from_schema() Comment {
 	return Comment{
-		AuthorID:  _s.AuthorID,
-		PostID:    _s.PostID,
-		Body:      _s.Body,
-		UpVotes:   _s.UpVotes,
-		DownVotes: _s.DownVotes,
+		AuthorID: _s.AuthorID,
+		PostID:   _s.PostID,
+		Body:     _s.Body,
 	}
 }
 
