@@ -3,6 +3,7 @@ package comment
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -34,6 +35,32 @@ func CreateComment(c *gin.Context) {
 
 	// Create a new comment object from the body schema
 	comment := commentBody.from_schema()
+	// comment.UpdateFields()
+	comment.UpdateFields()
+
+	// Check if AuthorID points to a real author(user)
+	if !comment.Author.Exists(comment.AuthorID) {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"message": fmt.Sprintf("Author ID '%d' does not point to an existing resource.", comment.AuthorID),
+				"data":    map[string]interface{}{},
+			},
+		)
+		return
+	}
+
+	// Check if PostID points to a real post
+	if !comment.Post.Exists(comment.PostID) {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"message": fmt.Sprintf("Post ID '%d' does not point to an existing resource.", comment.PostID),
+				"data":    map[string]interface{}{},
+			},
+		)
+		return
+	}
 
 	// Create a comment object in the database
 	app.DB.Create(&comment)
@@ -42,7 +69,7 @@ func CreateComment(c *gin.Context) {
 	respObj := comment.to_schema()
 
 	c.JSON(
-		200,
+		http.StatusOK,
 		gin.H{
 			"message": "Comment created successfully",
 			"data":    CommentOut{Comment: respObj},
@@ -64,7 +91,7 @@ func ListComments(c *gin.Context) {
 
 	// Serve the converted data as response to the frontend
 	c.JSON(
-		200,
+		http.StatusOK,
 		gin.H{
 			"data": CommentListOut{Comments: comments_schema},
 		},
@@ -77,13 +104,13 @@ func GetComment(c *gin.Context) {
 
 	// Query the DB for comment with id `commentID`
 	var comment Comment
-	result := app.DB.Find(&comment, commentID)
+	result := app.DB.Limit(1).First(&comment, commentID)
 
 	commentNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
 	if commentNotFound {
 		c.JSON(
-			200,
+			http.StatusNotFound,
 			gin.H{
 				"message": fmt.Sprintf("The comment identified by comment id '%s' could not be found.", commentID),
 				"data":    map[string]interface{}{},
@@ -96,7 +123,7 @@ func GetComment(c *gin.Context) {
 
 		// Serve schema as response
 		c.JSON(
-			200,
+			http.StatusOK,
 			gin.H{
 				"data": CommentOut{Comment: comment_as_schema},
 			},
@@ -118,13 +145,13 @@ func UpdateComment(c *gin.Context) {
 
 	// Find the comment object with the given comment id
 	var comment Comment
-	result := app.DB.Find(&comment, commentID)
+	result := app.DB.Limit(1).First(&comment, commentID)
 
 	commentNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
 	if commentNotFound {
 		c.JSON(
-			200,
+			http.StatusNotFound,
 			gin.H{
 				"message": fmt.Sprintf("The comment identified by comment id '%s' could not be found.", commentID),
 				"data":    map[string]interface{}{},
@@ -136,13 +163,13 @@ func UpdateComment(c *gin.Context) {
 		comment.Body = commentBody.Body
 
 		// Save the updated data
-		app.DB.Save(comment)
+		app.DB.Save(&comment)
 
 		// Convert the comment object to a schema
 		comment_as_schema := comment.to_schema()
 
 		c.JSON(
-			200,
+			http.StatusOK,
 			gin.H{
 				"message": fmt.Sprintf("The comment with comment id '%s' was updated successfully.", commentID),
 				"data":    CommentOut{Comment: comment_as_schema},
@@ -157,21 +184,33 @@ func DeleteComment(c *gin.Context) {
 
 	// Find the comment object with the given comment id
 	var comment Comment
-	result := app.DB.Find(&comment, commentID)
+	result := app.DB.Limit(1).First(&comment, commentID)
 
 	commentNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
 	if commentNotFound {
 		c.JSON(
-			200,
+			http.StatusNotFound,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' could not be found.", commentID),
 				"data":    map[string]interface{}{},
 			},
 		)
 	} else {
+		// Delete comment from DB
+		result = app.DB.Delete(&comment)
+		resultNotDeleted := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
+
+		if resultNotDeleted {
+			c.JSON(http.StatusNotFound, gin.H{
+				"data":    map[string]interface{}{},
+				"message": fmt.Sprintf("An error occurred: comment identified by comment id '%s' could not be deleted.", commentID),
+			})
+			return
+		}
+
 		c.JSON(
-			200,
+			http.StatusOK,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' deleted successfully.", commentID),
 				"data":    map[string]interface{}{},
@@ -187,13 +226,13 @@ func UpvoteComment(c *gin.Context) {
 
 	// Query the DB for comment with id `commentID`
 	var comment Comment
-	result := app.DB.Find(&comment, commentID)
+	result := app.DB.Limit(1).First(&comment, commentID)
 
 	commentNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
 	if commentNotFound {
 		c.JSON(
-			200,
+			http.StatusNotFound,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' could not be found.", commentID),
 				"data":    map[string]interface{}{},
@@ -204,13 +243,13 @@ func UpvoteComment(c *gin.Context) {
 		comment.UpVotes = comment.UpVotes + 1
 
 		// Save the updated field
-		app.DB.Save(comment)
+		app.DB.Save(&comment)
 
 		// Convert comment to schema
 		comment_as_schema := comment.to_schema()
 
 		c.JSON(
-			200,
+			http.StatusOK,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' has been successfully upvoted.", commentID),
 				"data":    CommentOut{Comment: comment_as_schema},
@@ -226,13 +265,13 @@ func DownVoteComment(c *gin.Context) {
 
 	// Query the DB for comment with id `commentID`
 	var comment Comment
-	result := app.DB.Find(&comment, commentID)
+	result := app.DB.Limit(1).First(&comment, commentID)
 
 	commentNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
 	if commentNotFound {
 		c.JSON(
-			200,
+			http.StatusNotFound,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' could not be found.", commentID),
 				"data":    map[string]interface{}{},
@@ -243,13 +282,13 @@ func DownVoteComment(c *gin.Context) {
 		comment.DownVotes++
 
 		// Save the updated field
-		app.DB.Save(comment)
+		app.DB.Save(&comment)
 
 		// Convert comment to schema
 		comment_as_schema := comment.to_schema()
 
 		c.JSON(
-			200,
+			http.StatusOK,
 			gin.H{
 				"message": fmt.Sprintf("Comment identified by comment id '%s' has been successfully upvoted.", commentID),
 				"data":    CommentOut{Comment: comment_as_schema},
