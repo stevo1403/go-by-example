@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	app "github.com/stevo1403/go-by-example/initializers"
@@ -22,7 +23,7 @@ func CreateUser(c *gin.Context) {
 	err := c.BindJSON(&userBody)
 
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -46,21 +47,21 @@ func CreateUser(c *gin.Context) {
 		},
 	}
 
-	c.JSON(200, gin.H{"data": respObj})
+	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
 func GetUser(c *gin.Context) {
 	userId := c.Param("id")
 	var user User
 	// Get the user by ID
-	app.DB.First(&user, userId)
+	app.DB.Limit(1).First(&user, userId)
 
 	// Convert the user to schema
 	respObj := UserOut{
 		User: user.to_schema(),
 	}
 
-	c.JSON(200, gin.H{"data": respObj})
+	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
 func GetUsers(c *gin.Context) {
@@ -73,7 +74,7 @@ func GetUsers(c *gin.Context) {
 	}
 
 	respObj := UsersOut{Users: users_as_schema}
-	c.JSON(200, gin.H{"data": respObj})
+	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
 func UpdateUser(c *gin.Context) {
@@ -86,7 +87,7 @@ func UpdateUser(c *gin.Context) {
 	result := app.DB.Limit(1).First(&user, userId)
 
 	if result.Error == gorm.ErrRecordNotFound || result.Error != nil {
-		c.JSON(404, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"data":    map[string]interface{}{},
 			"message": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
 		})
@@ -100,7 +101,7 @@ func UpdateUser(c *gin.Context) {
 		app.DB.Save(&user)
 
 		respObj := user.to_schema()
-		c.JSON(200, gin.H{"data": respObj})
+		c.JSON(http.StatusOK, gin.H{"data": respObj})
 	}
 
 }
@@ -112,19 +113,28 @@ func DeleteUser(c *gin.Context) {
 	c.BindJSON(&userBody)
 
 	var user User
-	err := app.DB.First(&user, userId).Error
+	err := app.DB.Limit(1).First(&user, userId).Error
 
 	if err == gorm.ErrRecordNotFound {
-		c.JSON(404, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"data":    map[string]interface{}{},
 			"message": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
 		})
 	} else {
 
 		// Delete the user
-		app.DB.Delete(&user)
+		result := app.DB.Delete(&user)
+		resultNotDeleted := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
 
-		c.JSON(200, gin.H{
+		if resultNotDeleted {
+			c.JSON(http.StatusNotFound, gin.H{
+				"data":    map[string]interface{}{},
+				"message": fmt.Sprintf("An error occurred: User with user id '%s' could not be deleted.", userId),
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
 			"data":    map[string]interface{}{},
 			"message": "User deleted successfully",
 		})
