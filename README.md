@@ -17,13 +17,27 @@ The following models exist in this project
 ## API routes
 The following endpoints are available for consumption:
 
-| METHOD        | route          |
-| ------------- | :-------------:|
-| GET           | `/users`         |
-| POST          | `/users`         |
-| GET           | `/users/:id`     |
-| PUT           | `/users/:id`     |
-| DELETE        | `/users/:id`     |
+| METHOD        | route                     |
+| ------------- | :-------------:           |
+| GET           | `/users`                  |
+| POST          | `/users`                  |
+| GET           | `/users/:id`              |
+| PUT           | `/users/:id`              |
+| DELETE        | `/users/:id`              |
+
+| GET           | `/post`                   |
+| POST          | `/post`                   |
+| GET           | `/post/:id`               |
+| PUT           | `/post/:id`               |
+| DELETE        | `/post/:id`               |
+
+| GET           | `/comment`                |
+| POST          | `/comment`                |
+| GET           | `/comment/:id`            |
+| PUT           | `/comment/:id`            |
+| DELETE        | `/comment/:id`            |
+| PUT           | `/comment/:id/upvote`     |
+| PUT           | `/comment/:id/downvote`    |
 
 
 ### API Collection
