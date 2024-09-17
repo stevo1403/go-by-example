@@ -17,7 +17,7 @@ The following models exist in this project
 ## API routes
 The following endpoints are available for consumption:
 
-| METHOD        | route                     |
+| Method        | Route                     |
 | ------------- | :-------------:           |
 | GET           | `/users`                  |
 | POST          | `/users`                  |
