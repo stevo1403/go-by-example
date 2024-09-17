@@ -1,8 +1,10 @@
 package post
 
 import (
-	"github.com/stevo1403/go-by-example/apps/user"
 	"gorm.io/gorm"
+
+	"github.com/stevo1403/go-by-example/apps/user"
+	app "github.com/stevo1403/go-by-example/initializers"
 )
 
 type Post struct {
@@ -11,4 +13,18 @@ type Post struct {
 	Body     string
 	AuthorID int       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
 	Author   user.User // Todo: Change this to allow multiple author per posts
+}
+
+func (p Post) UpdateFields() {
+	app.DB.Limit(1).First(&p.Author, p.AuthorID)
+}
+
+func (p Post) Exists(postID int) bool {
+	// Checks if post exists
+	var post Post
+	result := app.DB.Limit(1).First(&post, postID)
+	recordNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
+
+	return !recordNotFound
+
 }
