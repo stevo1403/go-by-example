@@ -9,13 +9,13 @@ import (
 
 type Comment struct {
 	gorm.Model
-	AuthorID  int `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
+	AuthorID  uint `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
 	Author    user.User
-	PostID    int `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
+	PostID    uint `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` // Foreign key
 	Post      post.Post
 	Body      string
-	UpVotes   int
-	DownVotes int
+	UpVotes   uint64
+	DownVotes uint64
 }
 
 func (c Comment) UpdateFields() {
@@ -24,6 +24,6 @@ func (c Comment) UpdateFields() {
 }
 
 type Votes struct {
-	UpVotes   int
-	DownVotes int
+	UpVotes   uint64
+	DownVotes uint64
 }

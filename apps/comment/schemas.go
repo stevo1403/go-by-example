@@ -1,21 +1,21 @@
 package comment
 
 type CommentSchema struct {
-	AuthorID  int    `json:"author_id"`
-	PostID    int    `json:"post_id"`
+	AuthorID  uint   `json:"author_id"`
+	PostID    uint   `json:"post_id"`
 	Body      string `json:"body"`
-	UpVotes   int    `json:"upvotes"`
-	DownVotes int    `json:"downvotes"`
+	UpVotes   uint64 `json:"upvotes"`
+	DownVotes uint64 `json:"downvotes"`
 }
 
 type CommentOutSchema struct {
 	ID         uint   `json:"id"`
-	AuthorID   int    `json:"author_id"`
+	AuthorID   uint   `json:"author_id"`
 	AuthorName string `json:"author_name"`
-	PostID     int    `json:"post_id"`
+	PostID     uint   `json:"post_id"`
 	Body       string `json:"body"`
-	UpVotes    int    `json:"upvotes"`
-	DownVotes  int    `json:"downvotes"`
+	UpVotes    uint64 `json:"upvotes"`
+	DownVotes  uint64 `json:"downvotes"`
 }
 
 type CommentOut struct {
