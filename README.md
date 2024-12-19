@@ -7,6 +7,7 @@ Go project to demonstrate my knowledge of
 1. Go standard library
 2. Gin
 3. Gorm
+4. JWT + Go
 
 ## Models
 The following models exist in this project
@@ -37,7 +38,7 @@ The following endpoints are available for consumption:
 | PUT           | `/comment/:id`            |
 | DELETE        | `/comment/:id`            |
 | PUT           | `/comment/:id/upvote`     |
-| PUT           | `/comment/:id/downvote`    |
+| PUT           | `/comment/:id/downvote`   |
 
 
 ### API Collection
