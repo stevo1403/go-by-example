@@ -18,33 +18,60 @@ type UserView interface {
 }
 
 func CreateUser(c *gin.Context) {
+	var MIN_PASSWORD_LENGTH = 7
+
 	var userBody UserSchema
 
+	// Convert request body to schema
 	err := c.BindJSON(&userBody)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	userObj := User{
-		FirstName: userBody.FirstName,
-		LastName:  userBody.LastName,
-		Email:     userBody.Email,
-		Phone:     userBody.Phone,
-		Password:  userBody.Password,
+	// Convert schema to an Object
+	userObj := userBody.to_object()
+
+	// Check password length
+	if len(userObj.Password) < MIN_PASSWORD_LENGTH {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{"error": fmt.Sprintf("Password must be at least %d characters long.", MIN_PASSWORD_LENGTH)},
+		)
+		return
+	}
+	// Check phone number validity
+	if !isValidPhoneNumber(userObj.Phone) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid phone number."})
+		return
+	}
+	// Check email validity
+	if !isValidEmailRegex(userObj.Email) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email address."})
+		return
+	}
+	// Is email registered to another account?
+	emailAlreadyExists := userObj.EmailExists(userObj.Email)
+	if emailAlreadyExists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email address is already in use. Please choose a different email address."})
+		return
+	}
+	// Generate password
+	_, err = userObj.GeneratePasswordHash()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
 	}
 
-	app.DB.Create(&userObj)
+	// Create user in the DB
+	err = userObj.Create()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
 
 	respObj := UserOut{
-		User: UserOutSchema{
-			ID:        userObj.ID,
-			FirstName: userObj.FirstName,
-			LastName:  userObj.LastName,
-			Email:     userObj.Email,
-			Phone:     userObj.Phone,
-		},
+		User: userObj.to_schema(),
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": respObj})
@@ -140,4 +167,46 @@ func DeleteUser(c *gin.Context) {
 		})
 	}
 
+}
+
+func AuthenticateUser(c *gin.Context) {
+	var userBody UserSchema
+	c.BindJSON(&userBody)
+
+	var user User
+	result := app.DB.Limit(1).Where(&User{Email: userBody.Email}).First(&user)
+
+	if result.Error == gorm.ErrRecordNotFound {
+		c.JSON(http.StatusNotFound, gin.H{
+			"data":    map[string]interface{}{},
+			"message": "User not found",
+		})
+		return
+	}
+
+	// Check password
+	passwordIsCorrect := user.ComparePassword(userBody.Password)
+	if !passwordIsCorrect {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"data":    map[string]interface{}{},
+			"message": "Invalid password",
+		})
+		return
+	}
+
+	user_token, err := user.GenerateToken()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"data":    map[string]interface{}{},
+			"message": "An error occurred while generating token",
+		})
+		return
+	}
+
+	respObj := LoginOut{
+		User:  user.to_schema(),
+		Token: user_token,
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
