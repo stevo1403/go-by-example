@@ -30,6 +30,25 @@ func (u User) to_schema() UserOutSchema {
 	}
 }
 
+func (_u *UserSchema) from_schema() User {
+	return User{
+		FirstName: _u.FirstName,
+		LastName:  _u.LastName,
+		Email:     _u.Email,
+		Phone:     _u.Phone,
+		Password:  _u.Password,
+	}
+}
+
+func (_u *UserSchema) to_object() User {
+	return _u.from_schema()
+}
+
 type UsersOut struct {
 	Users []UserOutSchema `json:"users"`
+}
+
+type LoginOut struct {
+	User  UserOutSchema `json:"user"`
+	Token string        `json:"token"`
 }
