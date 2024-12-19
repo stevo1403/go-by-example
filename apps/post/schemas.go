@@ -3,12 +3,12 @@ package post
 type PostSchema struct {
 	Title    string `json:"title"`
 	Body     string `json:"body"`
-	AuthorID int    `json:"author_id"`
+	AuthorID uint   `json:"author_id"`
 }
 
 type PostOutSchema struct {
 	ID         uint   `json:"id"`
-	AuthorID   int    `json:"author_id"`
+	AuthorID   uint   `json:"author_id"`
 	AuthorName string `json:"author_name"`
 	Title      string `json:"title"`
 	Body       string `json:"body"`
