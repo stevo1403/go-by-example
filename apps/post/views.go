@@ -19,6 +19,16 @@ type PostView interface {
 	DeletePost()
 }
 
+// CreatePost godoc
+// @Summary Create a new post
+// @Description Create a new post
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param post body PostSchema true "Post object that needs to be created"
+// @Security BearerAuth
+// @Success 200 {object} map[string]PostOut "{"data": PostOut}"
+// @Router /posts [post]
 func CreatePost(c *gin.Context) {
 
 	// Parse the request body into a schema
@@ -60,6 +70,18 @@ func CreatePost(c *gin.Context) {
 	)
 
 }
+
+// GetPost godoc
+// @Summary Get a post by ID
+// @Description Get a post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]PostOut "{"data": PostOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Post with post id '{id}' does not exist."}"
+// @Router /posts/{id} [get]
 func GetPost(c *gin.Context) {
 	// Extract parameter 'id' from URL
 	postID := c.Param("id")
@@ -90,6 +112,16 @@ func GetPost(c *gin.Context) {
 	}
 
 }
+
+// ListPosts godoc
+// @Summary Get all posts
+// @Description Get all posts
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]PostListOut "{"data": PostListOut}"
+// @Router /posts [get]
 func ListPosts(c *gin.Context) {
 	// Retrieve posts from DB
 	var posts []Post
@@ -107,6 +139,19 @@ func ListPosts(c *gin.Context) {
 		gin.H{"data": PostListOut{Posts: posts_as_schema}},
 	)
 }
+
+// UpdatePost godoc
+// @Summary Update a post by ID
+// @Description Update a post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Param post body PostUpdateSchema true "Post object that needs to be updated"
+// @Security BearerAuth
+// @Success 200 {object} map[string]PostOut "{"data": PostOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Post with post id '{id}' does not exist."}"
+// @Router /posts/{id} [put]
 func UpdatePost(c *gin.Context) {
 
 	postID := c.Param("id")
@@ -154,6 +199,17 @@ func UpdatePost(c *gin.Context) {
 	}
 
 }
+// DeletePost godoc
+// @Summary Delete a post by ID
+// @Description Delete a post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "{"data": {}, "message": "Post deleted successfully"}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Post with post id '{id}' does not exist."}"
+// @Router /posts/{id} [delete]
 func DeletePost(c *gin.Context) {
 	// Extract parameter `id` from URL
 	postID := c.Param("id")
