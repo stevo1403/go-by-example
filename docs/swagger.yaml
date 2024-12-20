@@ -1,0 +1,214 @@
+basePath: /api/v1
+definitions:
+  user.LoginOut:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/user.UserOutSchema'
+    type: object
+  user.UserLoginSchema:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  user.UserOut:
+    properties:
+      user:
+        $ref: '#/definitions/user.UserOutSchema'
+    type: object
+  user.UserOutSchema:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  user.UserSchema:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  user.UsersOut:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/user.UserOutSchema'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple API for a blogging platform
+  title: UnGo API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user
+      parameters:
+      - description: User object that needs to be authenticated
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserLoginSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": LoginOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.LoginOut'
+            type: object
+        "401":
+          description: '{"data": {}, "message": "Invalid password"}'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Authenticate a user
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User object that needs to be created
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": UserOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.UserOut'
+            type: object
+      summary: Create a new user
+      tags:
+      - auth
+  /users:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": UsersOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.UsersOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": {}, "message": "User deleted successfully"}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a user by ID
+      tags:
+      - users
+    get:
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": UserOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.UserOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User object that needs to be updated
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": UserOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.UserOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a user by ID
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: |-
+      "Bearer token for API authorization"
+      Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
