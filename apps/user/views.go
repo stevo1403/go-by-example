@@ -12,11 +12,24 @@ import (
 type UserView interface {
 	GetUser()
 	GetUsers()
-	CreateUser()
 	UpdateUser()
 	DeleteUser()
 }
 
+type AuthView interface {
+	CreateUser()
+	AuthenticateUser()
+}
+
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Create a new user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body UserSchema true "User object that needs to be created"
+// @Success 200 {object} map[string]UserOut "{"data": UserOut}"
+// @Router /auth/signup [post]
 func CreateUser(c *gin.Context) {
 	var MIN_PASSWORD_LENGTH = 7
 
@@ -77,6 +90,15 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
+// GetUser godoc
+// @Summary Get a user by ID
+// @Description Get a user by ID
+// @Tags users
+// @Produce json
+// @Param id path string true "User ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]UserOut "{"data": UserOut}"
+// @Router /users/{id} [get]
 func GetUser(c *gin.Context) {
 	userId := c.Param("id")
 	var user User
@@ -87,10 +109,17 @@ func GetUser(c *gin.Context) {
 	respObj := UserOut{
 		User: user.to_schema(),
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
+// GetUsers godoc
+// @Summary Get all users
+// @Description Get all users
+// @Tags users
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]UsersOut "{"data": UsersOut}"
+// @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []User
 	app.DB.Find(&users)
@@ -104,6 +133,17 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
+// UpdateUser godoc
+// @Summary Update a user by ID
+// @Description Update a user by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param user body UserSchema true "User object that needs to be updated"
+// @Security BearerAuth
+// @Success 200 {object} map[string]UserOut "{"data": UserOut}"
+// @Router /users/{id} [put]
 func UpdateUser(c *gin.Context) {
 	userId := c.Param("id")
 
@@ -130,9 +170,18 @@ func UpdateUser(c *gin.Context) {
 		respObj := user.to_schema()
 		c.JSON(http.StatusOK, gin.H{"data": respObj})
 	}
-
 }
 
+
+// DeleteUser godoc
+// @Summary Delete a user by ID
+// @Description Delete a user by ID
+// @Tags users
+// @Produce json
+// @Param id path string true "User ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "{"data": {}, "message": "User deleted successfully"}"
+// @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	userId := c.Param("id")
 	var userBody UserSchema
@@ -166,11 +215,20 @@ func DeleteUser(c *gin.Context) {
 			"message": "User deleted successfully",
 		})
 	}
-
 }
 
+// AuthenticateUser godoc
+// @Summary Authenticate a user
+// @Description Authenticate a user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body UserLoginSchema true "User object that needs to be authenticated"
+// @Success 200 {object} map[string]LoginOut "{"data": LoginOut}"
+// @Failure 401 {object} map[string]interface{} "{"data": {}, "message": "Invalid password"}"
+// @Router /auth/login [post]
 func AuthenticateUser(c *gin.Context) {
-	var userBody UserSchema
+	var userBody UserLoginSchema
 	c.BindJSON(&userBody)
 
 	var user User
@@ -186,6 +244,7 @@ func AuthenticateUser(c *gin.Context) {
 
 	// Check password
 	passwordIsCorrect := user.ComparePassword(userBody.Password)
+	fmt.Println(passwordIsCorrect)
 	if !passwordIsCorrect {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"data":    map[string]interface{}{},
