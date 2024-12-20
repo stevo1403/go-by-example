@@ -110,7 +110,7 @@ func (u User) ComparePassword(inputPassword string) bool {
 	// Compare user-supplied password against DB-stored password
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(inputPassword))
 
-	if err != nil {
+	if err == nil {
 		return true
 	} else {
 		return false
