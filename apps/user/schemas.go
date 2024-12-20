@@ -16,6 +16,11 @@ type UserOutSchema struct {
 	Phone     string `json:"phone"`
 }
 
+type UserLoginSchema struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type UserOut struct {
 	User UserOutSchema `json:"user"`
 }
