@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -13,20 +12,28 @@ func UserAuthMiddleware(c *gin.Context) {
 	// Extract Authorization header
 	authorizationHeader := c.Request.Header.Get("Authorization")
 
+	// Check if Authorization header is empty
+	if authorizationHeader == "" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
+
 	// Extract Bearer token from header value
 	bearerToken := strings.TrimPrefix(authorizationHeader, "Bearer ")
 
-	fmt.Println(bearerToken)
+	// Check if token is empty
+	if bearerToken == ""{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
+		return
+	}
 
 	// Check if token is valid
 	isTokenValid, err := user.User{}.VerifyToken(bearerToken)
-	fmt.Println(isTokenValid, err)
-
 	if isTokenValid && err == nil {
 		c.Next()
 		return
 	} else {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 }
