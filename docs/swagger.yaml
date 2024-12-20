@@ -1,5 +1,94 @@
 basePath: /api/v1
 definitions:
+  comment.CommentListOut:
+    properties:
+      comments:
+        description: List of comment objects
+        items:
+          $ref: '#/definitions/comment.CommentOutSchema'
+        type: array
+    type: object
+  comment.CommentOut:
+    properties:
+      comment:
+        $ref: '#/definitions/comment.CommentOutSchema'
+    type: object
+  comment.CommentOutSchema:
+    properties:
+      author_id:
+        type: integer
+      author_name:
+        type: string
+      body:
+        type: string
+      downvotes:
+        type: integer
+      id:
+        type: integer
+      post_id:
+        type: integer
+      upvotes:
+        type: integer
+    type: object
+  comment.CommentSchema:
+    properties:
+      author_id:
+        type: integer
+      body:
+        type: string
+      downvotes:
+        type: integer
+      post_id:
+        type: integer
+      upvotes:
+        type: integer
+    type: object
+  comment.CommentUpdateSchema:
+    properties:
+      body:
+        type: string
+    type: object
+  post.PostListOut:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/post.PostOutSchema'
+        type: array
+    type: object
+  post.PostOut:
+    properties:
+      post:
+        $ref: '#/definitions/post.PostOutSchema'
+    type: object
+  post.PostOutSchema:
+    properties:
+      author_id:
+        type: integer
+      author_name:
+        type: string
+      body:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  post.PostSchema:
+    properties:
+      author_id:
+        type: integer
+      body:
+        type: string
+      title:
+        type: string
+    type: object
+  post.PostUpdateSchema:
+    properties:
+      body:
+        type: string
+      title:
+        type: string
+    type: object
   user.LoginOut:
     properties:
       token:
@@ -112,6 +201,348 @@ paths:
       summary: Create a new user
       tags:
       - auth
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: List all comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentListOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentListOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment
+      parameters:
+      - description: Comment object that needs to be created
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comment.CommentSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new comment
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": {}, "message": "Comment deleted successfully"}'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Comment with comment id ''{id}''
+            does not exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a comment by ID
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: Get a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Comment with comment id ''{id}''
+            does not exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a comment by ID
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comment object that needs to be updated
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comment.CommentUpdateSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Comment with comment id ''{id}''
+            does not exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a comment by ID
+      tags:
+      - comments
+  /comments/{id}/downvote:
+    put:
+      consumes:
+      - application/json
+      description: Downvote a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Comment with comment id ''{id}''
+            does not exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Downvote a comment by ID
+      tags:
+      - comments
+  /comments/{id}/upvote:
+    put:
+      consumes:
+      - application/json
+      description: Upvote a comment by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": CommentOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/comment.CommentOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Comment with comment id ''{id}''
+            does not exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Upvote a comment by ID
+      tags:
+      - comments
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Get all posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": PostListOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/post.PostListOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all posts
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: Create a new post
+      parameters:
+      - description: Post object that needs to be created
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/post.PostSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": PostOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/post.PostOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new post
+      tags:
+      - posts
+  /posts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a post by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": {}, "message": "Post deleted successfully"}'
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Post with post id ''{id}'' does not
+            exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a post by ID
+      tags:
+      - posts
+    get:
+      consumes:
+      - application/json
+      description: Get a post by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": PostOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/post.PostOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Post with post id ''{id}'' does not
+            exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a post by ID
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: Update a post by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Post object that needs to be updated
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/post.PostUpdateSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": PostOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/post.PostOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Post with post id ''{id}'' does not
+            exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a post by ID
+      tags:
+      - posts
   /users:
     get:
       description: Get all users
