@@ -23,6 +23,16 @@ type CommentView interface {
 	DownVoteComment()
 }
 
+// CreateComment godoc
+// @Summary Create a new comment
+// @Description Create a new comment
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param comment body CommentSchema true "Comment object that needs to be created"
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Router /comments [post]
 func CreateComment(c *gin.Context) {
 	var commentBody CommentSchema
 
@@ -77,6 +87,15 @@ func CreateComment(c *gin.Context) {
 	)
 }
 
+// ListComments godoc
+// @Summary List all comments
+// @Description List all comments
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentListOut "{"data": CommentListOut}"
+// @Router /comments [get]
 func ListComments(c *gin.Context) {
 	var comments []Comment
 
@@ -98,6 +117,17 @@ func ListComments(c *gin.Context) {
 	)
 }
 
+// GetComment godoc
+// @Summary Get a comment by ID
+// @Description Get a comment by ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path string true "Comment ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Comment with comment id '{id}' does not exist."}"
+// @Router /comments/{id} [get]
 func GetComment(c *gin.Context) {
 	// Extract parameter `id` from URL
 	commentID := c.Param("id")
@@ -131,6 +161,18 @@ func GetComment(c *gin.Context) {
 	}
 }
 
+// UpdateComment godoc
+// @Summary Update a comment by ID
+// @Description Update a comment by ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path string true "Comment ID"
+// @Param comment body CommentUpdateSchema true "Comment object that needs to be updated"
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Comment with comment id '{id}' does not exist."}"
+// @Router /comments/{id} [put]
 func UpdateComment(c *gin.Context) {
 	// Extract parameter `id` from URL
 	commentID := c.Param("id")
@@ -178,6 +220,18 @@ func UpdateComment(c *gin.Context) {
 	}
 
 }
+
+// DeleteComment godoc
+// @Summary Delete a comment by ID
+// @Description Delete a comment by ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path string true "Comment ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "{"data": {}, "message": "Comment deleted successfully"}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Comment with comment id '{id}' does not exist."}"
+// @Router /comments/{id} [delete]
 func DeleteComment(c *gin.Context) {
 	// Extract parameter `id` from URL
 	commentID := c.Param("id")
@@ -220,6 +274,17 @@ func DeleteComment(c *gin.Context) {
 
 }
 
+// UpvoteComment godoc
+// @Summary Upvote a comment by ID
+// @Description Upvote a comment by ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path string true "Comment ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Comment with comment id '{id}' does not exist."}"
+// @Router /comments/{id}/upvote [put]
 func UpvoteComment(c *gin.Context) {
 	// Extract parameter `id` from URL
 	commentID := c.Param("id")
@@ -259,6 +324,17 @@ func UpvoteComment(c *gin.Context) {
 
 }
 
+// DownVoteComment godoc
+// @Summary Downvote a comment by ID
+// @Description Downvote a comment by ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path string true "Comment ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Comment with comment id '{id}' does not exist."}"
+// @Router /comments/{id}/downvote [put]
 func DownVoteComment(c *gin.Context) {
 	// Extract parameter `id` from URL
 	commentID := c.Param("id")
