@@ -88,6 +88,558 @@
                 }
             }
         },
+        "/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List all comments",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "List all comments",
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentListOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentListOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new comment",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Create a new comment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comment.CommentSchema"
+                            }
+                        }
+                    },
+                    "description": "Comment object that needs to be created",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Get a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Update a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comment.CommentUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "Comment object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Delete a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": {}, \"message\": \"Comment deleted successfully\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}/downvote": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Downvote a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Downvote a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}/upvote": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upvote a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Upvote a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all posts",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get all posts",
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostListOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostListOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new post",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Create a new post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post.PostSchema"
+                            }
+                        }
+                    },
+                    "description": "Post object that needs to be created",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post.PostUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "Post object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Delete a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": {}, \"message\": \"Post deleted successfully\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -258,6 +810,144 @@
             }
         },
         "schemas": {
+            "comment.CommentListOut": {
+                "type": "object",
+                "properties": {
+                    "comments": {
+                        "description": "List of comment objects",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/comment.CommentOutSchema"
+                        }
+                    }
+                }
+            },
+            "comment.CommentOut": {
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "$ref": "#/components/schemas/comment.CommentOutSchema"
+                    }
+                }
+            },
+            "comment.CommentOutSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "author_name": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "downvotes": {
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "post_id": {
+                        "type": "integer"
+                    },
+                    "upvotes": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "comment.CommentSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "downvotes": {
+                        "type": "integer"
+                    },
+                    "post_id": {
+                        "type": "integer"
+                    },
+                    "upvotes": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "comment.CommentUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostListOut": {
+                "type": "object",
+                "properties": {
+                    "posts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/post.PostOutSchema"
+                        }
+                    }
+                }
+            },
+            "post.PostOut": {
+                "type": "object",
+                "properties": {
+                    "post": {
+                        "$ref": "#/components/schemas/post.PostOutSchema"
+                    }
+                }
+            },
+            "post.PostOutSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "author_name": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
             "user.LoginOut": {
                 "type": "object",
                 "properties": {
