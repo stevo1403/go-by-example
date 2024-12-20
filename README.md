@@ -1,45 +1,73 @@
 # go-by-example
-Basic Go Project with `Gin` and `Gorm`
+Simple CMS Blog with `Gin` and `Gorm`
 
-## Objective
+## Installation 🛠️
+1. Installing Dependencies
+```console
+go get
+```
+2. Compile into executable
+```console
+go build -o build/go-by-example.exe
+```
+
+## Usage 🚀
+1. Execute the compiled binary
+```console
+./build/go-by-example.exe
+```
+2. Or Execute without compilation
+```console
+go run app.go main.go
+```
+3. Swagger/OpenAPI UI
+Head to [Swagger UI](http://localhost:8080/swagger/index.html)
+
+## Objective 🎯
 
 Go project to demonstrate my knowledge of
 1. Go standard library
 2. Gin
 3. Gorm
 4. JWT + Go
+5. Swagger/OpenAPI
 
-## Models
+## Models 📦
 The following models exist in this project
 * User
 * Comment
 * Post
 
-## API routes
+## API routes 📡
+`Host`: [API Host](http://localhost:8080)
+`Base Path`: */api/v1/*
+
 The following endpoints are available for consumption:
 
 | Method        | Route                     |
-| ------------- | :-------------:           |
+| ------------- | :----------------------:  |
+| POST          | `/auth/login`             |
+| POST          | `/auth/signup`            |
+|    ---        |     ---                   |
 | GET           | `/users`                  |
-| POST          | `/users`                  |
 | GET           | `/users/:id`              |
 | PUT           | `/users/:id`              |
 | DELETE        | `/users/:id`              |
 |    ---        |     ---                   |
-| GET           | `/post`                   |
-| POST          | `/post`                   |
-| GET           | `/post/:id`               |
-| PUT           | `/post/:id`               |
-| DELETE        | `/post/:id`               |
+| GET           | `/posts`                  |
+| POST          | `/posts`                  |
+| GET           | `/posts/:id`              |
+| PUT           | `/posts/:id`              |
+| DELETE        | `/posts/:id`              |
 |    ---        |     ---                   |
-| GET           | `/comment`                |
-| POST          | `/comment`                |
-| GET           | `/comment/:id`            |
-| PUT           | `/comment/:id`            |
-| DELETE        | `/comment/:id`            |
-| PUT           | `/comment/:id/upvote`     |
-| PUT           | `/comment/:id/downvote`   |
+| GET           | `/comments`               |
+| POST          | `/comments`               |
+| GET           | `/comments/:id`           |
+| PUT           | `/comments/:id`           |
+| DELETE        | `/comments/:id`           |
+| PUT           | `/comments/:id/upvote`    |
+| PUT           | `/comments/:id/downvote`  |
 
 
-### API Collection
-A collection of relevant API routes and the expected content is documented in [Postman API Collection](docs/User.postman_collection.json)
+### API Collection 📚
+A collection of relevant API routes and the expected content is documented in [Postman API Collection](docs/openapi3.json)
