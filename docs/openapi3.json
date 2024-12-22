@@ -40,7 +40,7 @@
                         }
                     },
                     "401": {
-                        "description": "{\"data\": {}, \"message\": \"Invalid password\"}",
+                        "description": "{\"data\": {}, \"error\": \"Invalid password\"}",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -708,55 +708,6 @@
                     }
                 }
             },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update a user by ID",
-                "tags": [
-                    "users"
-                ],
-                "summary": "Update a user by ID",
-                "parameters": [
-                    {
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/user.UserSchema"
-                            }
-                        }
-                    },
-                    "description": "User object that needs to be updated",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "{\"data\": UserOut}",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "$ref": "#/components/schemas/user.UserOut"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -787,6 +738,108 @@
                                 "schema": {
                                     "type": "object",
                                     "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a user's password by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's password by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserPasswordUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "User password object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/profile": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a user's profile by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's profile by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserProfileUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "User profile object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
                                 }
                             }
                         }
@@ -989,6 +1042,35 @@
                     },
                     "id": {
                         "type": "integer"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserPasswordUpdateSchema": {
+                "type": "object",
+                "required": [
+                    "old_password",
+                    "password"
+                ],
+                "properties": {
+                    "old_password": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserProfileUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string"
                     },
                     "last_name": {
                         "type": "string"

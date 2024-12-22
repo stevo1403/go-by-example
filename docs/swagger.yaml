@@ -121,6 +121,25 @@ definitions:
       phone:
         type: string
     type: object
+  user.UserPasswordUpdateSchema:
+    properties:
+      old_password:
+        type: string
+      password:
+        type: string
+    required:
+    - old_password
+    - password
+    type: object
+  user.UserProfileUpdateSchema:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
   user.UserSchema:
     properties:
       email:
@@ -170,7 +189,7 @@ paths:
               $ref: '#/definitions/user.LoginOut'
             type: object
         "401":
-          description: '{"data": {}, "message": "Invalid password"}'
+          description: '{"data": {}, "error": "Invalid password"}'
           schema:
             additionalProperties: true
             type: object
@@ -604,22 +623,23 @@ paths:
       summary: Get a user by ID
       tags:
       - users
+  /users/{id}/password:
     put:
       consumes:
       - application/json
-      description: Update a user by ID
+      description: Update a user's password by ID
       parameters:
       - description: User ID
         in: path
         name: id
         required: true
         type: string
-      - description: User object that needs to be updated
+      - description: User password object that needs to be updated
         in: body
         name: user
         required: true
         schema:
-          $ref: '#/definitions/user.UserSchema'
+          $ref: '#/definitions/user.UserPasswordUpdateSchema'
       produces:
       - application/json
       responses:
@@ -631,7 +651,38 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Update a user by ID
+      summary: Update a user's password by ID
+      tags:
+      - users
+  /users/{id}/profile:
+    put:
+      consumes:
+      - application/json
+      description: Update a user's profile by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User profile object that needs to be updated
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserProfileUpdateSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": UserOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/user.UserOut'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a user's profile by ID
       tags:
       - users
 securityDefinitions:
