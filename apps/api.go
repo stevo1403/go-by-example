@@ -5,15 +5,28 @@ import (
 	"github.com/stevo1403/go-by-example/apps/comment"
 	"github.com/stevo1403/go-by-example/apps/post"
 	"github.com/stevo1403/go-by-example/apps/user"
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/files"
+	cms "github.com/stevo1403/go-by-example/cms/views"
 	"github.com/stevo1403/go-by-example/docs"
 	middlewares "github.com/stevo1403/go-by-example/middlewares"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func LoadViews() {
 	r := gin.Default()
 
+	r.Static("/static", "cms/static")
+
+	app := r.Group("/app")
+	{
+		app.GET("/home", cms.HomeView)
+		app.GET("/profile", cms.ProfileView)
+		app.GET("/login", cms.LoginView)
+		app.GET("/posts", cms.PostListView)
+		app.GET("/comments", cms.CommentListView)
+		app.GET("/media", cms.MediaView)
+		app.GET("/settings", cms.SettingsView)
+	}
 	v1 := r.Group("/api/v1")
 	{
 		user_router := v1.Group("/users")
@@ -24,7 +37,8 @@ func LoadViews() {
 
 			user_router.GET("", user.GetUsers)
 			user_router.GET("/:id", user.GetUser)
-			user_router.PUT("/:id", user.UpdateUser)
+			user_router.PUT("/:id/profile", user.UpdateUserProfile)
+			user_router.PUT("/:id/password", user.UpdateUserPassword)
 			user_router.DELETE("/:id", user.DeleteUser)
 		}
 
@@ -58,7 +72,7 @@ func LoadViews() {
 			auth_router.POST("/signup", user.CreateUser)
 		}
 	}
-	
+
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
