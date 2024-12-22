@@ -54,23 +54,31 @@ func (u User) EmailExists(email string) bool {
 }
 
 func (u *User) UpdatePasswordHash(password string) error {
-	// Convert plaintext password to bytes
-	password_bytes := []byte(password)
-
 	// Check if user exists
 	if !u.Exists(u.ID) {
 		return fmt.Errorf("cannot update password for non-existing user")
 	}
 
+	// Convert plaintext password to bytes
+	password_bytes := []byte(password)
+
 	// Hash the password
-	password_hash, err := bcrypt.GenerateFromPassword(password_bytes, bcrypt.MinCost)
+	hashed_password, err := bcrypt.GenerateFromPassword(password_bytes, bcrypt.DefaultCost)
 
 	if err != nil {
-		return fmt.Errorf("cannot generate password: %w", err)
-	} else {
-		u.Password = string(password_hash)
-		return nil
+		if err == bcrypt.ErrPasswordTooLong {
+			return fmt.Errorf("cannot generate password: password is too long")
+		} else {
+			return fmt.Errorf("cannot generate password: %w", err)
+		}
 	}
+	// Convert the hashed password to a string
+	password_s := string(hashed_password)
+
+	// Set the user password to the hashed password
+	u.Password = password_s
+
+	return nil
 
 }
 
