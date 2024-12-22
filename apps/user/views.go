@@ -32,6 +32,7 @@ type AuthView interface {
 // @Router /auth/signup [post]
 func CreateUser(c *gin.Context) {
 	var MIN_PASSWORD_LENGTH = 7
+	var MAX_PASSWORD_LENGTH = 20
 
 	var userBody UserSchema
 
@@ -50,6 +51,13 @@ func CreateUser(c *gin.Context) {
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{"error": fmt.Sprintf("Password must be at least %d characters long.", MIN_PASSWORD_LENGTH)},
+		)
+		return
+	}
+	if len(userObj.Password) > MAX_PASSWORD_LENGTH {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{"error": fmt.Sprintf("Password must be at most %d characters long.", MAX_PASSWORD_LENGTH)},
 		)
 		return
 	}
@@ -72,14 +80,14 @@ func CreateUser(c *gin.Context) {
 	// Generate password
 	_, err = userObj.GeneratePasswordHash()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Create user in the DB
 	err = userObj.Create()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -133,45 +141,134 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": respObj})
 }
 
-// UpdateUser godoc
-// @Summary Update a user by ID
-// @Description Update a user by ID
+// UpdateUserProfile godoc
+// @Summary Update a user's profile by ID
+// @Description Update a user's profile by ID
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Param user body UserSchema true "User object that needs to be updated"
+// @Param user body UserProfileUpdateSchema true "User profile object that needs to be updated"
 // @Security BearerAuth
 // @Success 200 {object} map[string]UserOut "{"data": UserOut}"
-// @Router /users/{id} [put]
-func UpdateUser(c *gin.Context) {
+// @Router /users/{id}/profile [put]
+func UpdateUserProfile(c *gin.Context) {
 	userId := c.Param("id")
 
-	userBody := UserSchema{}
-	c.BindJSON(&userBody)
+	userBody := UserProfileUpdateSchema{}
+	err := c.ShouldBindJSON(&userBody)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var user User
 	result := app.DB.Limit(1).First(&user, userId)
 
 	if result.Error == gorm.ErrRecordNotFound || result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"data":    map[string]interface{}{},
-			"message": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
+			"data":  map[string]interface{}{},
+			"error": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
 		})
 	} else {
-		// Update the user
-		user.FirstName = userBody.FirstName
-		user.LastName = userBody.LastName
-		user.Email = userBody.Email
-		user.Phone = userBody.Phone
+		// Perform checks on the incoming data
+		// Check phone number validity
+		if userBody.Phone != "" && !isValidPhoneNumber(userBody.Phone) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid phone number."})
+			return
+		}
+
+		// Update the user object
+		if userBody.FirstName != "" {
+			user.FirstName = userBody.FirstName
+		}
+		if userBody.LastName != "" {
+			user.LastName = userBody.LastName
+		}
+		if userBody.Phone != "" {
+			user.Phone = userBody.Phone
+		}
 
 		app.DB.Save(&user)
 
 		respObj := user.to_schema()
 		c.JSON(http.StatusOK, gin.H{"data": respObj})
+		return
 	}
 }
 
+// UpdateUserPassword godoc
+// @Summary Update a user's password by ID
+// @Description Update a user's password by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param user body UserPasswordUpdateSchema true "User password object that needs to be updated"
+// @Security BearerAuth
+// @Success 200 {object} map[string]UserOut "{"data": UserOut}"
+// @Router /users/{id}/password [put]
+func UpdateUserPassword(c *gin.Context) {
+	var MIN_PASSWORD_LENGTH = 7
+	var MAX_PASSWORD_LENGTH = 20
+
+	userId := c.Param("id")
+
+	userBody := UserPasswordUpdateSchema{}
+	err := c.ShouldBindJSON(&userBody)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var user User
+	result := app.DB.Limit(1).First(&user, userId)
+
+	if result.Error == gorm.ErrRecordNotFound || result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"data":  map[string]interface{}{},
+			"error": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
+		})
+	} else {
+		// Perform checks on the incoming data
+		// Check password length
+		if len(userBody.Password) < MIN_PASSWORD_LENGTH {
+			c.JSON(
+				http.StatusBadRequest,
+				gin.H{"error": fmt.Sprintf("Password must be at least %d characters long.", MIN_PASSWORD_LENGTH)},
+			)
+			return
+		}
+		if len(userBody.Password) > MAX_PASSWORD_LENGTH {
+			c.JSON(
+				http.StatusBadRequest,
+				gin.H{"error": fmt.Sprintf("Password must be at most %d characters long.", MAX_PASSWORD_LENGTH)},
+			)
+			return
+		}
+		// Check if old password is correct
+		passwordIsCorrect := user.ComparePassword(userBody.OldPassword)
+		if !passwordIsCorrect {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"data":  map[string]interface{}{},
+				"error": "Old password is incorrect.",
+			})
+			return
+		}
+		// Update the password
+		err = user.UpdatePasswordHash(userBody.Password)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		app.DB.Save(&user)
+
+		respObj := user.to_schema()
+		c.JSON(http.StatusOK, gin.H{"data": respObj, "message": "Password updated successfully"})
+		return
+	}
+}
 
 // DeleteUser godoc
 // @Summary Delete a user by ID
@@ -193,8 +290,8 @@ func DeleteUser(c *gin.Context) {
 
 	if err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusNotFound, gin.H{
-			"data":    map[string]interface{}{},
-			"message": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
+			"data":  map[string]interface{}{},
+			"error": fmt.Sprintf("User identified by user ID '%s' does not exist", userId),
 		})
 	} else {
 
@@ -204,8 +301,8 @@ func DeleteUser(c *gin.Context) {
 
 		if resultNotDeleted {
 			c.JSON(http.StatusNotFound, gin.H{
-				"data":    map[string]interface{}{},
-				"message": fmt.Sprintf("An error occurred: User with user id '%s' could not be deleted.", userId),
+				"data":  map[string]interface{}{},
+				"error": fmt.Sprintf("An error occurred: User with user id '%s' could not be deleted.", userId),
 			})
 			return
 		}
@@ -225,7 +322,7 @@ func DeleteUser(c *gin.Context) {
 // @Produce json
 // @Param user body UserLoginSchema true "User object that needs to be authenticated"
 // @Success 200 {object} map[string]LoginOut "{"data": LoginOut}"
-// @Failure 401 {object} map[string]interface{} "{"data": {}, "message": "Invalid password"}"
+// @Failure 401 {object} map[string]interface{} "{"data": {}, "error": "Invalid password"}"
 // @Router /auth/login [post]
 func AuthenticateUser(c *gin.Context) {
 	var userBody UserLoginSchema
@@ -236,19 +333,18 @@ func AuthenticateUser(c *gin.Context) {
 
 	if result.Error == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusNotFound, gin.H{
-			"data":    map[string]interface{}{},
-			"message": "User not found",
+			"data":  map[string]interface{}{},
+			"error": "User not found",
 		})
 		return
 	}
 
 	// Check password
 	passwordIsCorrect := user.ComparePassword(userBody.Password)
-	fmt.Println(passwordIsCorrect)
 	if !passwordIsCorrect {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"data":    map[string]interface{}{},
-			"message": "Invalid password",
+			"data":  map[string]interface{}{},
+			"error": "Invalid password",
 		})
 		return
 	}
@@ -256,8 +352,8 @@ func AuthenticateUser(c *gin.Context) {
 	user_token, err := user.GenerateToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"data":    map[string]interface{}{},
-			"message": "An error occurred while generating token",
+			"data":  map[string]interface{}{},
+			"error": "An error occurred while generating token",
 		})
 		return
 	}
