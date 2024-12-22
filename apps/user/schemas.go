@@ -21,6 +21,17 @@ type UserLoginSchema struct {
 	Password string `json:"password"`
 }
 
+type UserProfileUpdateSchema struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+}
+
+type UserPasswordUpdateSchema struct {
+	OldPassword string `json:"old_password"  binding:"required"`
+	Password    string `json:"password" binding:"required" gte:"7" lte:"20"`
+}
+
 type UserOut struct {
 	User UserOutSchema `json:"user"`
 }
