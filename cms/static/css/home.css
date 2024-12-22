@@ -1,0 +1,15 @@
+.nav .nav-right #nav-logout-btn {
+    display: block;
+}
+div.aside-with-main aside.aside {
+    flex: 1;
+    padding: 10px;
+}
+
+div.aside-with-main main.main {
+    flex: 3;
+}
+main{
+    padding: 2rem;
+    display: block;
+  }

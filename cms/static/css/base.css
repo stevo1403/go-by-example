@@ -1,0 +1,172 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-blue: #1e88e5;
+    --primary-green: #43a047;
+    --hover-blue: #1976d2;
+    --light-bg: #f8fafc;
+    --text-dark: #333;
+}
+
+main {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main h1 {
+    color: var(--text-dark);
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+main .subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+main .link {
+    color: var(--primary-blue);
+    text-decoration: none;
+}
+
+main .link:hover {
+    text-decoration: underline;
+}
+
+main .text-center {
+    text-align: center;
+}
+
+main .error {
+    color: red;
+    font-weight: bolder;
+    font-family: monospace;
+    margin-top: 0.5rem;
+    border: 2px solid red;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    display: none;
+}
+
+main .alert {
+    color: green;
+    font-weight: bolder;
+    font-family: monospace;
+    margin-top: 0.5rem;
+    border: 2px solid green;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    display: none;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+main .fade-in {
+    animation: fadein 2s;
+}
+
+
+
+.nav {
+    background: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-logo {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.nav-brand {
+    color: var(--primary-blue);
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-welcome {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.nav-logout {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.nav-logout:hover {
+    text-decoration: underline;
+}
+
+.nav .nav-right #nav-logout-btn {
+    background-color: var(--primary-blue);
+    padding: 5px;
+    border: 2px dotted white;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: larger;
+    font-weight: bold;
+    display: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+nav.nav {
+    flex: 0 0 auto;
+}
+
+/* side bar and the main content should be displayed with flexbox */
+div.aside-with-main {
+    display: flex;
+    flex: 0 0 auto;
+}
+/* sidebar should be hidden by default */
+div.aside-with-main aside.aside {
+    flex: 0 0 0%;
+}
+/* main content takes 100% of horizontal space */
+div.aside-with-main main.main {
+    flex: 0 0 100%;
+}
+/* footer takes full width */
+footer{
+    flex: 0 0 auto;
+}
