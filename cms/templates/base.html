@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        UnGo CMS
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    {% block stylesheet %}
+    {% endblock %}
+    <script type="module" src="/static/js/base.js"></script>
+    {% block script %}
+
+    {% endblock %}
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      {% block header %}
+
+      {% endblock %}
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+      {% block nav %}
+        <img src="/static/images/UnGoCMSIcon32x32.png" alt="Logo" class="nav-logo" />
+        <div class="nav-brand">UnGo CMS</div>
+        <div class="nav-right">
+          <button id="nav-logout-btn">Log Out</button>
+        </div>
+      {% endblock %}
+    </nav>
+    <div class="aside-with-main">
+      <!-- Sidebar Navigation -->
+      <aside class="aside">
+        {% block sidebar %}
+
+        {% endblock %}
+      </aside>
+      <!-- Main -->
+      <main class="main">
+        {% block content %}
+
+        {% endblock %}
+      </main>
+    </div>
+    <footer class="footer"></footer>
+  </body>
+</html>
