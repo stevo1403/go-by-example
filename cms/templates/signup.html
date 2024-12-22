@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Sign Up
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/forms.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/signup.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="form-container">
+    <form class="form" id="signupForm">
+      <h1>Create Account</h1>
+      <p class="subtitle">Please fill in your details to sign up</p>
+      <div>
+        <p class="error" id="error"></p>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a password" required />
+      </div>
+
+      <button type="submit" class="form-button">Sign Up</button>
+
+      <p class="text-center" style="margin-top: 1.5rem">
+        Already have an account? <a href="/app/login" class="link">Sign in</a>
+      </p>
+    </form>
+  </div>
+{% endblock %}
