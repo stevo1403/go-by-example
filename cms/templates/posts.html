@@ -1,0 +1,93 @@
+{% extends 'home.html' %}
+
+{% block title %}
+  My Posts - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/posts.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
+  <script type="module" src="/static/js/posts.js"></script>
+{% endblock %}
+{% block sidebar %}
+  {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+  <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+  <a href="/app/profile" class="sidebar-item">👤 Profile</a>
+  <a href="/app/posts" class="sidebar-item active">📝 Posts</a>
+  <a href="/app/comments" class="sidebar-item">💬 Comments</a>
+  <a href="/app/media" class="sidebar-item">🖼️ Media</a>
+  <a href="/app/settings" class="sidebar-item">⚙️ Settings</a>
+{% endblock %}
+{% block content %}
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="posts-header">
+      <h1>My Posts</h1>
+      <button class="new-post-button">✏️ New Post</button>
+    </div>
+
+    <div class="posts-grid">
+      <!-- Post Card -->
+      <div class="post-card">
+        <div class="post-status published">Published</div>
+        <h2 class="post-title">Getting Started with Web Development</h2>
+        <p class="post-excerpt">Learn the basics of HTML, CSS, and JavaScript in this comprehensive guide for beginners...</p>
+        <div class="post-meta">
+          <span class="post-date">Published on Oct 15, 2023</span>
+          <span class="post-views">👁️ 1.2k views</span>
+        </div>
+        <div class="post-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+
+      <!-- Draft Post Card -->
+      <div class="post-card">
+        <div class="post-status draft">Draft</div>
+        <h2 class="post-title">Advanced CSS Techniques</h2>
+        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
+        <div class="post-meta">
+          <span class="post-date">Last edited Oct 10, 2023</span>
+          <span class="post-views">📝 Draft</span>
+        </div>
+        <div class="post-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+
+      <!-- More post cards can be added here -->
+      <div class="post-card">
+        <div class="post-status draft">Draft</div>
+        <h2 class="post-title">Advanced CSS Techniques</h2>
+        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
+        <div class="post-meta">
+          <span class="post-date">Last edited Oct 10, 2023</span>
+          <span class="post-views">📝 Draft</span>
+        </div>
+        <div class="post-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+      <div class="post-card">
+        <div class="post-status draft">Draft</div>
+        <h2 class="post-title">Advanced CSS Techniques</h2>
+        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
+        <div class="post-meta">
+          <span class="post-date">Last edited Oct 10, 2023</span>
+          <span class="post-views">📝 Draft</span>
+        </div>
+        <div class="post-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

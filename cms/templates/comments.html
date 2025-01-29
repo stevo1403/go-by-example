@@ -1,0 +1,67 @@
+{% extends 'home.html' %}
+
+{% block title %}
+  My Comments - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/comments.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
+  <script type="module" src="/static/js/comments.js"></script>
+{% endblock %}
+{% block sidebar %}
+  {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+  <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+  <a href="/app/profile" class="sidebar-item">👤 Profile</a>
+  <a href="/app/posts" class="sidebar-item">📝 Posts</a>
+  <a href="/app/comments" class="sidebar-item active">💬 Comments</a>
+  <a href="/app/media" class="sidebar-item">🖼️ Media</a>
+  <a href="/app/settings" class="sidebar-item">⚙️ Settings</a>
+{% endblock %}
+{% block content %}
+  <!-- Main Content Area -->
+  <main class="main-content">
+    
+    <div class="comments-header">
+      <h1>My Comments</h1>
+    </div>
+
+    <div class="comments-list">
+      <!-- Comment Item -->
+      <div class="comment-card">
+        <div class="comment-meta">
+          <div class="comment-info">
+            <span class="comment-date">Oct 15, 2023</span>
+            <span class="comment-post">on <a href="#" class="link">Getting Started with Web Development</a></span>
+          </div>
+          <div class="comment-status approved">Approved</div>
+        </div>
+        <p class="comment-content">This is a fantastic guide! I especially loved the section about CSS Grid. It really helped me understand the concept better. Looking forward to more content like this.</p>
+        <div class="comment-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+
+      <!-- Pending Comment -->
+      <div class="comment-card">
+        <div class="comment-meta">
+          <div class="comment-info">
+            <span class="comment-date">Oct 14, 2023</span>
+            <span class="comment-post">on <a href="#" class="link">Advanced CSS Techniques</a></span>
+          </div>
+          <div class="comment-status pending">Pending</div>
+        </div>
+        <p class="comment-content">Great article! One question though - could you elaborate more on the use of CSS custom properties? I'm still trying to understand the best practices for using them in large projects.</p>
+        <div class="comment-actions">
+          <button class="action-button edit">Edit</button>
+          <button class="action-button delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Media Library - UnGo CMS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/media.css" />
+    <script type="module" src="js/nav.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
+    <script type="module" src="js/media.js"></script>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="nav">
+      <img src="https://placehold.co/40x40" alt="Logo" class="nav-logo" />
+      <div class="nav-brand">UnGo CMS</div>
+      <div class="nav-right">
+        <span class="nav-welcome">Welcome, John</span>
+        <a href="#" class="nav-logout">Log out</a>
+      </div>
+    </nav>
+  </body>
+</html>
+
+{% extends 'home.html' %}
+
+{% block title %}
+    Media Library - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/media.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
+  <script type="module" src="/static/js/media.js"></script>
+{% endblock %}
+{% block sidebar %}
+  {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+  <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+  <a href="/app/profile" class="sidebar-item">👤 Profile</a>
+  <a href="/app/posts" class="sidebar-item">📝 Posts</a>
+  <a href="/app/comments" class="sidebar-item">💬 Comments</a>
+  <a href="/app/media" class="sidebar-item active">🖼️ Media</a>
+  <a href="/app/settings" class="sidebar-item">⚙️ Settings</a>
+{% endblock %}
+{% block content %}
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="media-header">
+      <div class="header-left">
+        <h1>Media Library</h1>
+        <div class="media-filters">
+          <select class="filter-select" id="typeFilter">
+            <option value="all">All Types</option>
+            <option value="image">Images</option>
+            <option value="video">Videos</option>
+            <option value="document">Documents</option>
+          </select>
+          <select class="filter-select" id="dateFilter">
+            <option value="all">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+      </div>
+      <button class="upload-button">📤 Upload Media</button>
+    </div>
+
+    <div class="media-grid">
+      <!-- Image Item -->
+      <div class="media-card">
+        <div class="media-preview">
+          <img src="https://placehold.co/300x200" alt="Sample image" />
+          <div class="media-overlay">
+            <button class="overlay-button preview">👁️</button>
+            <button class="overlay-button copy">📋</button>
+            <button class="overlay-button delete">🗑️</button>
+          </div>
+        </div>
+        <div class="media-info">
+          <div class="media-name">sample-image.jpg</div>
+          <div class="media-meta">
+            <span>Image • 2.4 MB</span>
+            <span>Oct 15, 2023</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Item -->
+      <div class="media-card">
+        <div class="media-preview document">
+          <div class="document-icon">📄</div>
+          <div class="media-overlay">
+            <button class="overlay-button preview">👁️</button>
+            <button class="overlay-button copy">📋</button>
+            <button class="overlay-button delete">🗑️</button>
+          </div>
+        </div>
+        <div class="media-info">
+          <div class="media-name">presentation.pdf</div>
+          <div class="media-meta">
+            <span>PDF • 1.8 MB</span>
+            <span>Oct 14, 2023</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Item -->
+      <div class="media-card">
+        <div class="media-preview video">
+          <img src="https://placehold.co/300x200" alt="Video thumbnail" />
+          <div class="play-icon">▶️</div>
+          <div class="media-overlay">
+            <button class="overlay-button preview">👁️</button>
+            <button class="overlay-button copy">📋</button>
+            <button class="overlay-button delete">🗑️</button>
+          </div>
+        </div>
+        <div class="media-info">
+          <div class="media-name">tutorial-video.mp4</div>
+          <div class="media-meta">
+            <span>Video • 15.7 MB</span>
+            <span>Oct 13, 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

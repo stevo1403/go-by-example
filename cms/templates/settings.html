@@ -1,0 +1,155 @@
+{% extends 'home.html' %}
+
+{% block title %}
+    Settings - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/settings.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
+  <script type="module" src="/static/js/settings.js"></script>
+{% endblock %}
+{% block sidebar %}
+  {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+  <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+  <a href="/app/profile" class="sidebar-item">👤 Profile</a>
+  <a href="/app/posts" class="sidebar-item">📝 Posts</a>
+  <a href="/app/comments" class="sidebar-item">💬 Comments</a>
+  <a href="/app/media" class="sidebar-item">🖼️ Media</a>
+  <a href="/app/settings" class="sidebar-item active">⚙️ Settings</a>
+{% endblock %}
+{% block content %}
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="settings-header">
+      <h1>Settings</h1>
+    </div>
+
+    <div class="settings-grid">
+      <!-- General Settings -->
+      <div class="settings-card">
+        <div class="settings-section">
+          <h2 class="section-title">General Settings</h2>
+          <form id="generalSettingsForm">
+            <div class="form-group">
+              <label for="siteName">Site Name</label>
+              <input type="text" id="siteName" name="siteName" value="UnGo CMS" required />
+            </div>
+
+            <div class="form-group">
+              <label for="siteDescription">Site Description</label>
+              <textarea id="siteDescription" name="siteDescription" rows="3">A modern content management system</textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="timezone">Timezone</label>
+              <select id="timezone" name="timezone">
+                <option value="UTC">UTC</option>
+                <option value="EST">Eastern Time</option>
+                <option value="CST">Central Time</option>
+                <option value="PST">Pacific Time</option>
+              </select>
+            </div>
+
+            <button type="submit" class="settings-button">Save General Settings</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Content Settings -->
+      <div class="settings-card">
+        <div class="settings-section">
+          <h2 class="section-title">Content Settings</h2>
+          <form id="contentSettingsForm">
+            <div class="form-group">
+              <label for="postsPerPage">Posts Per Page</label>
+              <input type="number" id="postsPerPage" name="postsPerPage" value="10" min="1" max="50" required />
+            </div>
+
+            <div class="form-group">
+              <label for="excerptLength">Excerpt Length</label>
+              <input type="number" id="excerptLength" name="excerptLength" value="150" min="50" max="500" required />
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="commentsEnabled" name="commentsEnabled" checked />
+                <span>Enable Comments</span>
+              </label>
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="moderateComments" name="moderateComments" checked />
+                <span>Moderate Comments</span>
+              </label>
+            </div>
+
+            <button type="submit" class="settings-button">Save Content Settings</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Email Settings -->
+      <div class="settings-card">
+        <div class="settings-section">
+          <h2 class="section-title">Email Settings</h2>
+          <form id="emailSettingsForm">
+            <div class="form-group">
+              <label for="emailFrom">From Email</label>
+              <input type="email" id="emailFrom" name="emailFrom" placeholder="noreply@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="emailName">From Name</label>
+              <input type="text" id="emailName" name="emailName" placeholder="UnGo CMS" required />
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="notifyComments" name="notifyComments" checked />
+                <span>Email on New Comments</span>
+              </label>
+            </div>
+
+            <button type="submit" class="settings-button">Save Email Settings</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- API Settings -->
+      <div class="settings-card">
+        <div class="settings-section">
+          <h2 class="section-title">API Settings</h2>
+          <form id="apiSettingsForm">
+            <div class="form-group">
+              <label for="apiKey">API Key</label>
+              <div class="input-with-button">
+                <input type="text" id="apiKey" name="apiKey" value="sk_test_123456789" readonly />
+                <button type="button" class="copy-button" data-clipboard="sk_test_123456789">📋 Copy</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="webhookUrl">Webhook URL</label>
+              <input type="url" id="webhookUrl" name="webhookUrl" placeholder="https://your-domain.com/webhook" />
+            </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="enableApi" name="enableApi" checked />
+                <span>Enable API Access</span>
+              </label>
+            </div>
+
+            <button type="button" class="settings-button danger">Regenerate API Key</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

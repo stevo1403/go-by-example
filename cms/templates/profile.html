@@ -1,86 +1,92 @@
-{% extends 'base.html' %}
+{% extends 'home.html' %}
 
 {% block title %}
-  Home
+  Home - UnGo CMS
 {% endblock %}
 {% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
   <link rel="stylesheet" href="/static/css/forms.css" />
   <link rel="stylesheet" href="/static/css/profile.css" />
 {% endblock %}
 {% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
   <script type="module" src="/static/js/profile.js"></script>
   <script type="module" src="/static/js/password.js"></script>
 {% endblock %}
-{% block nav %}
-  <a href="/app/home">
-    <img src="/static/images/UnGoCMSIcon32x32.png" alt="Logo" class="nav-logo" />
-  </a>
-  <div class="nav-brand">UnGo CMS</div>
-  <div class="nav-right">
-    <span class="nav-welcome">Welcome, <span class="variable-label" id="nav-fullname-label"></span></span>
-    <button id="nav-logout-btn">Log Out</button>
-  </div>
-{% endblock %}
+{% block sidebar %}
+    {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+    <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+    <a href="/app/profile" class="sidebar-item active">👤 Profile</a>
+    <a href="/app/posts" class="sidebar-item">📝 Posts</a>
+    <a href="/app/comments" class="sidebar-item">💬 Comments</a>
+    <a href="/app/media" class="sidebar-item">🖼️ Media</a>
+    <a href="/app/settings" class="sidebar-item">⚙️ Settings</a>
+  {% endblock %}
 {% block content %}
-  <div class="settings-container">
-    <div class="form">
-      <h1>Profile Settings</h1>
-      <p class="subtitle">Update your personal information</p>
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="settings-container">
+      <div class="form">
+        <h1>Profile Settings</h1>
+        <p class="subtitle">Update your personal information</p>
 
-      <!-- Profile Section -->
-      <div class="section">
-        <h2 class="section-title">Personal Information</h2>
-        <div>
-          <p class="error" id="profile-update-error"></p>
-          <p class="alert" id="profile-update-alert"></p>
+        <!-- Profile Section -->
+        <div class="section">
+          <h2 class="section-title">Personal Information</h2>
+          <div>
+            <p class="error" id="profile-update-error"></p>
+            <p class="alert" id="profile-update-alert"></p>
+          </div>
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
+            </div>
+
+            <button type="submit" class="form-button">Update Profile</button>
+          </form>
         </div>
-        <form id="profileForm">
-          <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required />
+      </div>
+      <div class="form">
+        <!-- Password Section -->
+        <div class="section">
+          <h2 class="section-title">Change Password</h2>
+          <div>
+            <p class="error" id="password-update-error"></p>
+            <p class="alert" id="password-update-alert"></p>
           </div>
+          <form id="passwordForm">
+            <div class="form-group">
+              <label for="oldPassword">Current Password</label>
+              <input type="password" id="oldPassword" name="old_password" placeholder="Enter current password" required />
+            </div>
 
-          <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required />
-          </div>
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" name="password" placeholder="Enter new password" required />
+            </div>
 
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required />
-          </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm new password" required />
+            </div>
 
-          <button type="submit" class="form-button">Update Profile</button>
-        </form>
+            <button type="submit" class="form-button">Update Password</button>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="form">
-      <!-- Password Section -->
-      <div class="section">
-        <h2 class="section-title">Change Password</h2>
-        <div>
-          <p class="error" id="password-update-error"></p>
-          <p class="alert" id="password-update-alert"></p>
-        </div>
-        <form id="passwordForm">
-          <div class="form-group">
-            <label for="oldPassword">Current Password</label>
-            <input type="password" id="oldPassword" name="old_password" placeholder="Enter current password" required />
-          </div>
-
-          <div class="form-group">
-            <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" name="password" placeholder="Enter new password" required />
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Confirm New Password</label>
-            <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm new password" required />
-          </div>
-
-          <button type="submit" class="form-button">Update Password</button>
-        </form>
-      </div>
-    </div>
-  </div>
+  </main>
 {% endblock %}
