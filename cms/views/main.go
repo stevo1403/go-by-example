@@ -54,3 +54,27 @@ func SettingsView(c *gin.Context) {
 	c.Writer.WriteHeader(http.StatusOK)
 	tmpl.ExecuteWriter(pongo2.Context{"title": "Settings"}, c.Writer)
 }
+
+func ResetPasswordView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/password-reset.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Reset Password"}, c.Writer)
+}
+
+func CreatePostView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/create-post.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Create Post"}, c.Writer)
+}
+
+func CreateCommentView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/create-comment.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Create Comment"}, c.Writer)
+}
+
+func CreateMediaView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/create-media.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Create Media"}, c.Writer)
+}
