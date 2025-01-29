@@ -640,6 +640,57 @@
                 }
             }
         },
+        "/posts/{id}/views": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the views of a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update the views of a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [

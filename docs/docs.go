@@ -620,6 +620,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/posts/{id}/views": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Increment the views of a post by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update the views of a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": PostOut}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "$ref": "#/definitions/post.PostOut"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -926,8 +973,14 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "published_at": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
+                },
+                "views": {
+                    "type": "integer"
                 }
             }
         },

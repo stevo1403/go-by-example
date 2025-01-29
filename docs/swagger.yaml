@@ -70,8 +70,12 @@ definitions:
         type: string
       id:
         type: integer
+      published_at:
+        type: string
       title:
         type: string
+      views:
+        type: integer
     type: object
   post.PostSchema:
     properties:
@@ -560,6 +564,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Update a post by ID
+      tags:
+      - posts
+  /posts/{id}/views:
+    put:
+      consumes:
+      - application/json
+      description: Increment the views of a post by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": PostOut}'
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/post.PostOut'
+            type: object
+        "404":
+          description: '{"data": {}, "message": "Post with post id ''{id}'' does not
+            exist."}'
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update the views of a post by ID
       tags:
       - posts
   /users:
