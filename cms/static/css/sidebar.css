@@ -1,4 +1,6 @@
-
+main {
+  display: flex;
+}
 aside.aside, .sidebar {
   background: white;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);

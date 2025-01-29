@@ -1,0 +1,125 @@
+/* Comments Page Styles */
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .comments-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Ensure consistent height for cards */
+  .comment-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .comment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .comment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .comment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: #666;
+    font-size: 0.875rem;
+  }
+  
+  .comment-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+  
+  .comment-status.approved {
+    background-color: #e8f5e9;
+    color: #43a047;
+  }
+  
+  .comment-status.pending {
+    background-color: #fff3e0;
+    color: #ef6c00;
+  }
+  
+  .comment-content {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  
+  .comment-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+  
+  .action-button {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button.edit {
+    background-color: #e3f2fd;
+    color: var(--primary-blue);
+  }
+  
+  .action-button.edit:hover {
+    background-color: #bbdefb;
+  }
+  
+  .action-button.delete {
+    background-color: #ffebee;
+    color: #e53935;
+  }
+  
+  .action-button.delete:hover {
+    background-color: #ffcdd2;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .comments-list {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .comments-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .comment-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
