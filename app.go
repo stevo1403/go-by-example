@@ -11,6 +11,7 @@ func Migrate() {
 	app.DB.AutoMigrate(&user.User{})
 	app.DB.AutoMigrate(&post.Post{})
 	app.DB.AutoMigrate(&comment.Comment{})
+	app.DB.AutoMigrate(&post.PostViews{})
 }
 
 func Load() {
