@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
+	user "github.com/stevo1403/go-by-example/apps/user"
 	app "github.com/stevo1403/go-by-example/initializers"
 )
 
@@ -41,6 +42,7 @@ func CreatePost(c *gin.Context) {
 
 	// Create a new post object from the body schema
 	post := postBody.from_schema()
+	post.Publish()
 	post.UpdateFields()
 
 	if !post.Author.Exists((post.AuthorID)) {
@@ -129,8 +131,9 @@ func ListPosts(c *gin.Context) {
 
 	// Convert posts to schema
 	var posts_as_schema []PostOutSchema
-	for _, post := range posts {
-		posts_as_schema = append(posts_as_schema, post.to_schema())
+	for i := range posts {
+		posts[i].UpdateFields()
+		posts_as_schema = append(posts_as_schema, posts[i].to_schema())
 	}
 
 	// Serve post data
@@ -199,6 +202,7 @@ func UpdatePost(c *gin.Context) {
 	}
 
 }
+
 // DeletePost godoc
 // @Summary Delete a post by ID
 // @Description Delete a post by ID
@@ -248,4 +252,62 @@ func DeletePost(c *gin.Context) {
 		return
 	}
 
+}
+
+// IncrementPostViews godoc
+// @Summary Update the views of a post by ID
+// @Description Increment the views of a post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Security BearerAuth
+// @Success 200 {object} map[string]PostOut "{"data": PostOut}"
+// @Failure 404 {object} map[string]interface{} "{"data": {}, "message": "Post with post id '{id}' does not exist."}"
+// @Router /posts/{id}/views [put]
+func IncrementPostViews(c *gin.Context) {
+	postID := c.Param("id")
+
+	// Query the DB for the post
+	var post Post
+	result := app.DB.Limit(1).First(&post, postID)
+
+	postNotFound := (result.Error != nil || result.Error == gorm.ErrRecordNotFound)
+
+	if postNotFound {
+		c.JSON(
+			http.StatusNotFound,
+			gin.H{
+				"message": fmt.Sprintf("Post with post id '%s' does not exist.", postID),
+				"data":    map[string]interface{}{},
+			},
+		)
+		return
+	} else {
+		// Update Post views
+		userIDStr, exists := c.Get("userID")
+		if !exists {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "something went wrong while processing your request"})
+			return
+		}
+		userID := userIDStr.(uint)
+
+		_user := user.User{}.GetUserByID(userID)
+
+		// Increment the views of the post by 1
+		post.IncrementViews(_user)
+
+		// Save Post data
+		app.DB.Save(&post) // Todo: Check .Error for failure
+
+		// Serve Post data to the frontend
+		post_as_schema := post.to_schema()
+		c.JSON(
+			http.StatusOK,
+			gin.H{
+				"message": fmt.Sprintf("Views for post with post id '%s' have been updated successfully.", postID),
+				"data":    PostOut{Post: post_as_schema},
+			},
+		)
+	}
 }
