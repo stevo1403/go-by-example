@@ -22,7 +22,7 @@ func UserAuthMiddleware(c *gin.Context) {
 	bearerToken := strings.TrimPrefix(authorizationHeader, "Bearer ")
 
 	// Check if token is empty
-	if bearerToken == ""{
+	if bearerToken == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No token provided"})
 		return
 	}
@@ -30,6 +30,13 @@ func UserAuthMiddleware(c *gin.Context) {
 	// Check if token is valid
 	isTokenValid, err := user.User{}.VerifyToken(bearerToken)
 	if isTokenValid && err == nil {
+		user, err := user.User{}.GetUserByToken(bearerToken)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		}
+
+		c.Set("userID", user.ID)
 		c.Next()
 		return
 	} else {
