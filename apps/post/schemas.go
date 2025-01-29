@@ -7,11 +7,13 @@ type PostSchema struct {
 }
 
 type PostOutSchema struct {
-	ID         uint   `json:"id"`
-	AuthorID   uint   `json:"author_id"`
-	AuthorName string `json:"author_name"`
-	Title      string `json:"title"`
-	Body       string `json:"body"`
+	ID          uint   `json:"id"`
+	AuthorID    uint   `json:"author_id"`
+	AuthorName  string `json:"author_name"`
+	Title       string `json:"title"`
+	Body        string `json:"body"`
+	Views       uint64 `json:"views"`
+	PublishedAt string `json:"published_at"`
 }
 
 type PostOut struct {
@@ -23,13 +25,15 @@ type PostUpdateSchema struct {
 	Body  string `json:"body"`
 }
 
-func (p Post) to_schema() PostOutSchema {
+func (p *Post) to_schema() PostOutSchema {
 	return PostOutSchema{
-		ID:         p.ID,
-		AuthorID:   p.AuthorID,
-		AuthorName: p.Author.GetFullName(),
-		Title:      p.Title,
-		Body:       p.Body,
+		ID:          p.ID,
+		AuthorID:    p.AuthorID,
+		AuthorName:  p.Author.GetFullName(),
+		Title:       p.Title,
+		Body:        p.Body,
+		Views:       p.Views,
+		PublishedAt: p.PublishedAt.Format("2006-01-02 15:04:05"),
 	}
 }
 
@@ -42,13 +46,5 @@ func (_s PostSchema) from_schema() Post {
 }
 
 type PostListOut struct {
-	Posts []PostOutSchema
+	Posts []PostOutSchema `json:"posts"`
 }
-
-// type PostListOut type SortBy []Type
-
-// func (a SortBy) Len() int           { return len(a) }
-// func (a SortBy) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-// func (a SortBy) Less(i, j int) bool { return a[i] < a[j] }{
-
-// }
