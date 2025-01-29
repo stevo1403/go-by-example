@@ -22,9 +22,14 @@ func LoadViews() {
 		app.GET("/home", cms.HomeView)
 		app.GET("/profile", cms.ProfileView)
 		app.GET("/login", cms.LoginView)
+		app.GET("/signup", cms.SignUpView)
+		app.GET("/reset-password", cms.ResetPasswordView)
 		app.GET("/posts", cms.PostListView)
+		app.GET("/posts/new", cms.CreatePostView)
 		app.GET("/comments", cms.CommentListView)
+		app.GET("/comments/new", cms.CreateCommentView)
 		app.GET("/media", cms.MediaView)
+		app.GET("/media/new", cms.CreateMediaView)
 		app.GET("/settings", cms.SettingsView)
 	}
 	v1 := r.Group("/api/v1")
@@ -64,6 +69,7 @@ func LoadViews() {
 			post_router.POST("", post.CreatePost)
 			post_router.PUT("/:id", post.UpdatePost)
 			post_router.DELETE("/:id", post.DeletePost)
+			post_router.PUT("/:id/views", post.IncrementPostViews)
 		}
 
 		auth_router := v1.Group("/auth")
