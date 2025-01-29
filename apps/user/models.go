@@ -209,6 +209,38 @@ func (u User) VerifyToken(tokenString string) (bool, error) {
 
 }
 
+func (u User) GetUserByToken(tokenString string) (User, error) {
+	/*
+		Ensure that VerifyToken is called before this function
+	*/
+
+	// Get the HMAC signing key
+	auth_token_key := os.Getenv("AUTH_TOKEN_KEY")
+	auth_token_key_bytes := []byte(auth_token_key)
+
+	claims := &UserJWTClaim{}
+
+	_token, err := jwt.ParseWithClaims(
+		tokenString,
+		claims,
+		func(token *jwt.Token) (interface{}, error) { return auth_token_key_bytes, nil },
+	)
+
+	if !_token.Valid || err != nil {
+		return User{}, fmt.Errorf("cannot get user by token: %w", err)
+	}
+
+	var user User
+	result := app.DB.Limit(1).Where(&User{Email: claims.Email}).First(&user)
+
+	if result.Error != nil {
+		return User{}, fmt.Errorf("cannot get user by token: %w", result.Error)
+	}
+
+	return user, nil
+
+}
+
 type UserJWTClaim struct {
 	jwt.StandardClaims
 	Email string   `json:"email"`
