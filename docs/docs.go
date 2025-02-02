@@ -103,7 +103,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "List all comments",
+                "description": "List all comments or comments by a specific post ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -113,10 +113,18 @@ const docTemplate = `{
                 "tags": [
                     "comments"
                 ],
-                "summary": "List all comments",
+                "summary": "List all comments or comments by a specific post ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "post_id",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": CommentListOut}",
+                        "description": "{\"status\": \"success\", \"data\": CommentListOut}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -150,13 +158,22 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/comment.CommentSchema"
+                            "$ref": "#/definitions/comment.CommentCreateSchema"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": CommentOut}",
+                        "description": "{\"status\": \"success\", \"data\": CommentOut}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "$ref": "#/definitions/comment.CommentOut"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\": \"success\", \"data\": CommentOut, \"message\": \"Author ID '%d' does not point to an existing resource.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -425,7 +442,7 @@ const docTemplate = `{
                 "summary": "Get all posts",
                 "responses": {
                     "200": {
-                        "description": "{\"data\": PostListOut}",
+                        "description": "{\"status\": \"success\", \"data\": PostListOut}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -465,7 +482,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": PostOut}",
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -505,7 +522,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": PostOut}",
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -514,7 +531,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -559,7 +576,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": PostOut}",
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -568,7 +585,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -604,14 +621,215 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": {}, \"message\": \"Post deleted successfully\"}",
+                        "description": "{\"status\": \"success\", \"data\": {}, \"message\": \"Post deleted successfully\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "404": {
-                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/images": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get images linked to a post by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get images linked to a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageListOut, \"message\": \"Images retrieved successfully.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload an image for a post by ID",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Upload an image for a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image to be uploaded",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Type of image (preview or attachment)",
+                        "name": "image_type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageOut, \"message\": \"Image uploaded successfully.\"}",
+                        "schema": {
+                            "$ref": "#/definitions/post.PostImageOut"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\": \"failure\", \"message\": \"something went wrong while processing your request\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/images/{image_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a specific image linked to a post by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get a specific image linked to a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Image ID",
+                        "name": "image_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageOut, \"message\": \"Image retrieved successfully.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Image with image id '{image_id}' does not exist.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a specific image linked to a post by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Delete a specific image linked to a post by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Image ID",
+                        "name": "image_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": {}, \"message\": \"Image deleted successfully.\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Image with image id '{image_id}' does not exist.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -649,7 +867,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"data\": PostOut}",
+                        "description": "{\"status\": \"success\", \"data\": PostOut, \"message\": \"Views for post with post id '{id}' have been updated successfully.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -657,8 +875,15 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "400": {
+                        "description": "{\"status\": \"failure\", \"message\": \"something went wrong while processing your request\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
                     "404": {
-                        "description": "{\"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -865,6 +1090,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "comment.CommentCreateSchema": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "integer"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "comment.CommentListOut": {
             "type": "object",
             "properties": {
@@ -906,25 +1145,8 @@ const docTemplate = `{
                 "post_id": {
                     "type": "integer"
                 },
-                "upvotes": {
-                    "type": "integer"
-                }
-            }
-        },
-        "comment.CommentSchema": {
-            "type": "object",
-            "properties": {
-                "author_id": {
-                    "type": "integer"
-                },
-                "body": {
+                "published_at": {
                     "type": "string"
-                },
-                "downvotes": {
-                    "type": "integer"
-                },
-                "post_id": {
-                    "type": "integer"
                 },
                 "upvotes": {
                     "type": "integer"
@@ -935,6 +1157,31 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "body": {
+                    "type": "string"
+                }
+            }
+        },
+        "post.PostImageOut": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "$ref": "#/definitions/post.PostImageOutSchema"
+                }
+            }
+        },
+        "post.PostImageOutSchema": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_type": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "url": {
                     "type": "string"
                 }
             }
@@ -973,6 +1220,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_draft": {
+                    "type": "boolean"
+                },
                 "published_at": {
                     "type": "string"
                 },
@@ -993,6 +1243,9 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -1003,6 +1256,9 @@ const docTemplate = `{
             "properties": {
                 "body": {
                     "type": "string"
+                },
+                "is_draft": {
+                    "type": "boolean"
                 },
                 "title": {
                     "type": "string"
