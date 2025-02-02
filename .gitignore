@@ -30,3 +30,6 @@ database.db
 
 # Exclude user uploaded files
 user-uploads/
+
+# Exclude images containing filename with "-image-"
+*-image-*
