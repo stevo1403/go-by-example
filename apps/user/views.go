@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,12 @@ func CreateUser(c *gin.Context) {
 	// Convert request body to schema
 	err := c.BindJSON(&userBody)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Printf("An error occurred while parsing response body: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failure",
+			"message": "Invalid request body",
+			"data":    map[string]interface{}{},
+		})
 		return
 	}
 
@@ -132,7 +138,7 @@ func GetUsers(c *gin.Context) {
 	var users []User
 	app.DB.Find(&users)
 
-	var users_as_schema []UserOutSchema
+	users_as_schema := []UserOutSchema{}
 	for _, user := range users {
 		users_as_schema = append(users_as_schema, user.to_schema())
 	}
@@ -283,10 +289,20 @@ func DeleteUser(c *gin.Context) {
 	userId := c.Param("id")
 	var userBody UserSchema
 
-	c.BindJSON(&userBody)
+	// Convert request body to schema
+	err := c.BindJSON(&userBody)
+	if err != nil {
+		log.Printf("An error occurred while parsing response body: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failure",
+			"message": "Invalid request body",
+			"data":    map[string]interface{}{},
+		})
+		return
+	}
 
 	var user User
-	err := app.DB.Limit(1).First(&user, userId).Error
+	err = app.DB.Limit(1).First(&user, userId).Error
 
 	if err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -326,7 +342,18 @@ func DeleteUser(c *gin.Context) {
 // @Router /auth/login [post]
 func AuthenticateUser(c *gin.Context) {
 	var userBody UserLoginSchema
-	c.BindJSON(&userBody)
+
+	// Convert request body to schema
+	err := c.BindJSON(&userBody)
+	if err != nil {
+		log.Printf("An error occurred while parsing response body: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failure",
+			"message": "Invalid request body",
+			"data":    map[string]interface{}{},
+		})
+		return
+	}
 
 	var user User
 	result := app.DB.Limit(1).Where(&User{Email: userBody.Email}).First(&user)
