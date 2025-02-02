@@ -8,10 +8,21 @@ import (
 )
 
 func Migrate() {
-	app.DB.AutoMigrate(&user.User{})
-	app.DB.AutoMigrate(&post.Post{})
-	app.DB.AutoMigrate(&comment.Comment{})
-	app.DB.AutoMigrate(&post.PostViews{})
+	if err := app.DB.AutoMigrate(&user.User{}); err != nil {
+		panic("Failed to migrate user model: " + err.Error())
+	}
+	if err := app.DB.AutoMigrate(&post.Post{}); err != nil {
+		panic("Failed to migrate post model: " + err.Error())
+	}
+	if err := app.DB.AutoMigrate(&comment.Comment{}); err != nil {
+		panic("Failed to migrate comment model: " + err.Error())
+	}
+	if err := app.DB.AutoMigrate(&post.PostViews{}); err != nil {
+		panic("Failed to migrate post views model: " + err.Error())
+	}
+	if err := app.DB.AutoMigrate(&post.PostImage{}); err != nil {
+		panic("Failed to migrate post image model: " + err.Error())
+	}
 }
 
 func Load() {
