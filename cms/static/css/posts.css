@@ -65,10 +65,12 @@
   }
   
   .post-excerpt {
-    color: #666;
+    color: #37007c;
     font-size: 0.95rem;
+    margin-top: 0.5rem;
     margin-bottom: 1rem;
     line-height: 1.5;
+    min-height: 20px;
   }
   
   .post-meta {
@@ -77,7 +79,13 @@
     align-items: center;
     color: #666;
     font-size: 0.875rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
+  }
+
+  .post-meta .post-author{
+    color: lightseagreen;
+    font-weight: bolder;
   }
   
   .post-actions {
@@ -112,3 +120,27 @@
   .action-button.delete:hover {
     background-color: #ffcdd2;
   }
+
+  
+/* Base box styling */
+.post-card {
+  opacity: 0; /* Start invisible */
+  transform: translateX(-20px); /* Slight initial offset for smoother fade-in */
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+/* Dynamic stagger animation */
+.post-card {
+  animation: fadeInPostCard 0.5s ease-in-out forwards;
+  animation-delay: calc(
+    var(--index) * 0.3s
+  ); /* Dynamic delay based on --index */
+}
+
+/* Keyframes for fade-in effect */
+@keyframes fadeInPostCard {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

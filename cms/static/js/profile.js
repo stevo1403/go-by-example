@@ -19,6 +19,7 @@ handleSubmit('profileForm', async (data) => {
         errorElement.style.display = 'block';
         errorElement.classList.add('fade-in');
     } else {
+        updateLocalData(result.data);
         errorElement.style.display = 'none';
         alertElement.textContent = '🎉 Profile updated successfully 🎉';
         alertElement.style.display = 'block';
@@ -78,6 +79,20 @@ function FillLabels(){
     }
 }
 
+function updateLocalData(data){
+    let user = localStorage.getItem('user');
+    let userObj = user ? JSON.parse(user) : null;
+    
+    if (userObj) {
+        if (data.id) userObj.id = data.id;
+        if (data.first_name) userObj.first_name = data.first_name;
+        if (data.last_name) userObj.last_name = data.last_name;
+        if (data.phone) userObj.phone = data.phone;
+        if (data.email) userObj.email = data.email;
+        
+        localStorage.setItem('user', JSON.stringify(userObj));
+    }
+}
 checkAuthState();
 
 document.addEventListener('DOMContentLoaded', function() {
