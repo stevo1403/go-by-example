@@ -27,3 +27,6 @@ go.work.sum
 # Remove database folder
 data/
 database.db
+
+# Exclude user uploaded files
+user-uploads/
