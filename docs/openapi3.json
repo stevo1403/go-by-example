@@ -1,0 +1,1483 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "This is a simple API for a blogging platform",
+        "title": "UnGo API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Authenticate a user",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Authenticate a user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserLoginSchema"
+                            }
+                        }
+                    },
+                    "description": "User object that needs to be authenticated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": LoginOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.LoginOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "{\"data\": {}, \"error\": \"Invalid password\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signup": {
+            "post": {
+                "description": "Create a new user",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create a new user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserSchema"
+                            }
+                        }
+                    },
+                    "description": "User object that needs to be created",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List all comments or comments by a specific post ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "List all comments or comments by a specific post ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "post_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": CommentListOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentListOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new comment",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Create a new comment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comment.CommentCreateSchema"
+                            }
+                        }
+                    },
+                    "description": "Comment object that needs to be created",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\": \"success\", \"data\": CommentOut, \"message\": \"Author ID '%d' does not point to an existing resource.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Get a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Update a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comment.CommentUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "Comment object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Delete a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": {}, \"message\": \"Comment deleted successfully\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}/downvote": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Downvote a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Downvote a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{id}/upvote": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upvote a comment by ID",
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Upvote a comment by ID",
+                "parameters": [
+                    {
+                        "description": "Comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": CommentOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/comment.CommentOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"data\": {}, \"message\": \"Comment with comment id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all posts",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get all posts",
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostListOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostListOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new post",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Create a new post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post.PostSchema"
+                            }
+                        }
+                    },
+                    "description": "Post object that needs to be created",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post.PostUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "Post object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Delete a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": {}, \"message\": \"Post deleted successfully\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/images": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get images linked to a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get images linked to a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageListOut, \"message\": \"Images retrieved successfully.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload an image for a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Upload an image for a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "image": {
+                                        "description": "Image to be uploaded",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "image_type": {
+                                        "description": "Type of image (preview or attachment)",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "image",
+                                    "image_type"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageOut, \"message\": \"Image uploaded successfully.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/post.PostImageOut"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\": \"failure\", \"message\": \"something went wrong while processing your request\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/images/{image_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a specific image linked to a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Get a specific image linked to a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Image ID",
+                        "name": "image_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostImageOut, \"message\": \"Image retrieved successfully.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Image with image id '{image_id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a specific image linked to a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Delete a specific image linked to a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Image ID",
+                        "name": "image_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": {}, \"message\": \"Image deleted successfully.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Image with image id '{image_id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/views": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Increment the views of a post by ID",
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Update the views of a post by ID",
+                "parameters": [
+                    {
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": \"success\", \"data\": PostOut, \"message\": \"Views for post with post id '{id}' have been updated successfully.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/post.PostOut"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\": \"failure\", \"message\": \"something went wrong while processing your request\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"status\": \"failure\", \"data\": {}, \"message\": \"Post with post id '{id}' does not exist.\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all users",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UsersOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UsersOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a user by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get a user by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a user by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete a user by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": {}, \"message\": \"User deleted successfully\"}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a user's password by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's password by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserPasswordUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "User password object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/profile": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a user's profile by ID",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's profile by ID",
+                "parameters": [
+                    {
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user.UserProfileUpdateSchema"
+                            }
+                        }
+                    },
+                    "description": "User profile object that needs to be updated",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": UserOut}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/user.UserOut"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "//localhost:8080/api/v1"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "description": "\"Bearer token for API authorization\"\nType \"Bearer\" followed by a space and JWT token.",
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "comment.CommentCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "post_id": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "comment.CommentListOut": {
+                "type": "object",
+                "properties": {
+                    "comments": {
+                        "description": "List of comment objects",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/comment.CommentOutSchema"
+                        }
+                    }
+                }
+            },
+            "comment.CommentOut": {
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "$ref": "#/components/schemas/comment.CommentOutSchema"
+                    }
+                }
+            },
+            "comment.CommentOutSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "author_name": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "downvotes": {
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "post_id": {
+                        "type": "integer"
+                    },
+                    "published_at": {
+                        "type": "string"
+                    },
+                    "upvotes": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "comment.CommentUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostImageOut": {
+                "type": "object",
+                "properties": {
+                    "image": {
+                        "$ref": "#/components/schemas/post.PostImageOutSchema"
+                    }
+                }
+            },
+            "post.PostImageOutSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "image_type": {
+                        "type": "string"
+                    },
+                    "post_id": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostListOut": {
+                "type": "object",
+                "properties": {
+                    "posts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/post.PostOutSchema"
+                        }
+                    }
+                }
+            },
+            "post.PostOut": {
+                "type": "object",
+                "properties": {
+                    "post": {
+                        "$ref": "#/components/schemas/post.PostOutSchema"
+                    }
+                }
+            },
+            "post.PostOutSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "author_name": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "is_draft": {
+                        "type": "boolean"
+                    },
+                    "published_at": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "views": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "post.PostSchema": {
+                "type": "object",
+                "properties": {
+                    "author_id": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "post.PostUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "body": {
+                        "type": "string"
+                    },
+                    "is_draft": {
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.LoginOut": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/user.UserOutSchema"
+                    }
+                }
+            },
+            "user.UserLoginSchema": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserOut": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/user.UserOutSchema"
+                    }
+                }
+            },
+            "user.UserOutSchema": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserPasswordUpdateSchema": {
+                "type": "object",
+                "required": [
+                    "old_password",
+                    "password"
+                ],
+                "properties": {
+                    "old_password": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserProfileUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UserSchema": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user.UsersOut": {
+                "type": "object",
+                "properties": {
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/user.UserOutSchema"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
