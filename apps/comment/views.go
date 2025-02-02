@@ -29,18 +29,26 @@ type CommentView interface {
 // @Tags comments
 // @Accept json
 // @Produce json
-// @Param comment body CommentSchema true "Comment object that needs to be created"
+// @Param comment body CommentCreateSchema true "Comment object that needs to be created"
 // @Security BearerAuth
-// @Success 200 {object} map[string]CommentOut "{"data": CommentOut}"
+// @Success 200 {object} map[string]CommentOut "{"status": "success", "data": CommentOut}"
+// @Success 400 {object} map[string]CommentOut "{"status": "success", "data": CommentOut, "message": "Post ID '%d' does not point to an existing resource."}"
+// @Success 400 {object} map[string]CommentOut "{"status": "success", "data": CommentOut, "message": "Author ID '%d' does not point to an existing resource."}"
 // @Router /comments [post]
 func CreateComment(c *gin.Context) {
-	var commentBody CommentSchema
+	var commentBody CommentCreateSchema
 
 	// Store the request body in `commentBody``
 	err := c.BindJSON(&commentBody)
 
 	if err != nil {
-		log.Fatalf("An error occurred while converting parsing response body: %s", err)
+		log.Printf("An error occurred while parsing response body: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failure",
+			"message": "Invalid request body",
+			"data":    map[string]interface{}{},
+		})
+		return
 	}
 
 	// Create a new comment object from the body schema
@@ -53,6 +61,7 @@ func CreateComment(c *gin.Context) {
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
+				"status":  "failure",
 				"message": fmt.Sprintf("Author ID '%d' does not point to an existing resource.", comment.AuthorID),
 				"data":    map[string]interface{}{},
 			},
@@ -65,6 +74,7 @@ func CreateComment(c *gin.Context) {
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
+				"status":  "failure",
 				"message": fmt.Sprintf("Post ID '%d' does not point to an existing resource.", comment.PostID),
 				"data":    map[string]interface{}{},
 			},
@@ -81,6 +91,7 @@ func CreateComment(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
+			"status":  "success",
 			"message": "Comment created successfully",
 			"data":    CommentOut{Comment: respObj},
 		},
@@ -88,31 +99,40 @@ func CreateComment(c *gin.Context) {
 }
 
 // ListComments godoc
-// @Summary List all comments
-// @Description List all comments
+// @Summary List all comments or comments by a specific post ID
+// @Description List all comments or comments by a specific post ID
 // @Tags comments
 // @Accept json
 // @Produce json
+// @Param post_id query string false "Post ID"
 // @Security BearerAuth
-// @Success 200 {object} map[string]CommentListOut "{"data": CommentListOut}"
+// @Success 200 {object} map[string]CommentListOut "{"status": "success", "data": CommentListOut}"
 // @Router /comments [get]
 func ListComments(c *gin.Context) {
-	var comments []Comment
+	comments := []Comment{}
+	postID := c.Query("post_id")
 
-	// Get a list of `Comment` objects from the database
-	app.DB.Find(&comments)
+	if postID != "" {
+		// Get a list of `Comment` objects for the specific post from the database
+		app.DB.Where("post_id = ?", postID).Find(&comments)
+	} else {
+		// Get a list of all `Comment` objects from the database
+		app.DB.Find(&comments)
+	}
 
 	// Convert `Comment` objects to schemas
-	var comments_schema []CommentOutSchema
-	for _, comment := range comments {
-		comments_schema = append(comments_schema, comment.to_schema())
+	comments_schema := []CommentOutSchema{}
+
+	for i := range comments {
+		comments_schema = append(comments_schema, comments[i].to_schema())
 	}
 
 	// Serve the converted data as response to the frontend
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"data": CommentListOut{Comments: comments_schema},
+			"status": "success",
+			"data":   CommentListOut{Comments: comments_schema},
 		},
 	)
 }
@@ -182,7 +202,13 @@ func UpdateComment(c *gin.Context) {
 	err := c.BindJSON(&commentBody)
 
 	if err != nil {
-		log.Fatalf("An error occurred while converting parsing response body: %s", err)
+		log.Printf("An error occurred while parsing response body: %s", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failure",
+			"message": "Invalid request body",
+			"data":    map[string]interface{}{},
+		})
+		return
 	}
 
 	// Find the comment object with the given comment id
