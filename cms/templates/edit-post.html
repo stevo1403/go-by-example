@@ -1,0 +1,107 @@
+{% extends 'home.html' %}
+
+{% block title %}
+  Edit Post - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/sidebar.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="/static/css/edit-post.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/sidebar.js"></script>
+  <script type="module" src="/static/js/nav.js"></script>
+  <script src="/static/libs/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script type="module" src="/static/js/edit-post.js"></script>
+{% endblock %}
+{% block sidebar %}
+  {% comment %} {% include 'sidebar.html' %} {% endcomment %}
+  <a href="/app/home" class="sidebar-item">📊 Dashboard</a>
+  <a href="/app/profile" class="sidebar-item">👤 Profile</a>
+  <a href="/app/posts" class="sidebar-item active">📝 Posts</a>
+  <a href="/app/comments" class="sidebar-item">💬 Comments</a>
+  <a href="/app/media" class="sidebar-item">🖼️ Media</a>
+  <a href="/app/settings" class="sidebar-item">⚙️ Settings</a>
+{% endblock %}
+{% block content %}
+  <!-- Main Content Area -->
+  <div class="editor hide">
+    <div class="editor-header">
+      <div class="header-left">
+        <h1>Edit Post</h1>
+        <hr>
+        <div class="post-meta">
+          <span class="post-status published">Published</span>
+          <span class="post-date">Last edited: Oct 15, 2023</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/app/posts" class="action-button cancel">Cancel</a>
+        <button class="action-button draft">Save as Draft</button>
+        <button class="action-button publish">Update</button>
+      </div>
+    </div>
+    <div class="editor-container">
+      <div class="form-group">
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" placeholder="Enter post title" value="Getting Started with Web Development" required />
+      </div>
+
+      <div class="form-group">
+        <label for="post-excerpt">Excerpt</label>
+        <textarea id="post-excerpt" placeholder="Enter a brief excerpt of your post" rows="3">Learn the basics of HTML, CSS, and JavaScript in this comprehensive guide for beginners...</textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="post-content">Content</label>
+        <textarea id="post-content">
+          <h2>Getting Started</h2>
+          <p>Welcome to this comprehensive guide on web development. In this tutorial, we'll cover the fundamental concepts and tools you need to get started with web development.</p>
+
+          <h3>HTML Basics</h3>
+          <p>HTML (HyperText Markup Language) is the backbone of any web page. Let's start with a basic example:</p>
+
+          <pre>
+            <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First Page&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Hello, World!&lt;/h1&gt; &lt;/body&gt; &lt;/html&gt;</code>
+          </pre>
+        </textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Tags</label>
+        <div class="tags-input">
+          <input type="text" id="tag-input" placeholder="Add tags (press Enter to add)" />
+          <div class="tags-container">
+            <span class="tag">
+              Web Development
+              <span class="tag-remove">×</span>
+            </span>
+            <span class="tag">
+              HTML
+              <span class="tag-remove">×</span>
+            </span>
+            <span class="tag">
+              CSS
+              <span class="tag-remove">×</span>
+            </span>
+            <span class="tag">
+              JavaScript
+              <span class="tag-remove">×</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Featured Image</label>
+        <div class="image-upload">
+          <input type="file" id="featured-image" accept="image/*" />
+          <input type="hidden" id="featured-image-url" />
+          <div class="upload-placeholder">
+          <input type="hidden" id="featured-image-url" />
+            <img src="/static/images/post-image-800x400.svg" alt="Current featured image" style="max-width: 100%; max-height: 200px; border-radius: 0.5rem;" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

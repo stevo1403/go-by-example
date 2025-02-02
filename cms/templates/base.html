@@ -11,12 +11,15 @@
     <link rel="stylesheet" href="/static/css/base.css" />
     {% block stylesheet %}
     {% endblock %}
-    <script type="module" src="/static/js/base.js"></script>
+  <script type="module" src="/static/js/formHandlers.js"></script>
+  <script type="module" src="/static/js/base.js"></script>
     {% block script %}
 
     {% endblock %}
   </head>
   <body>
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
     <!-- Header -->
     <header>
       {% block header %}
@@ -27,7 +30,9 @@
     <!-- Navigation Bar -->
     <nav class="nav">
       {% block nav %}
-        <img src="/static/images/UnGoCMSIcon32x32.png" alt="Logo" class="nav-logo" />
+        <a href="/app/home" class="nav-logo">
+          <img src="/static/images/UnGoCMSIcon32x32.png" alt="Logo" class="nav-logo" />
+        </a>
         <div class="nav-brand">UnGo CMS</div>
         <div class="nav-right">
           <button id="nav-logout-btn">Log Out</button>

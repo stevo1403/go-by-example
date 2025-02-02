@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/static/css/posts.css" />
 {% endblock %}
 {% block script %}
+  <script type="module" src="/static/libs/dompurify/3.0.6/purify.min.js"></script>
   <script type="module" src="/static/js/sidebar.js"></script>
   <script type="module" src="/static/js/nav.js"></script>
   <script type="module" src="/static/js/posts.js"></script>
@@ -31,63 +32,7 @@
     </div>
 
     <div class="posts-grid">
-      <!-- Post Card -->
-      <div class="post-card">
-        <div class="post-status published">Published</div>
-        <h2 class="post-title">Getting Started with Web Development</h2>
-        <p class="post-excerpt">Learn the basics of HTML, CSS, and JavaScript in this comprehensive guide for beginners...</p>
-        <div class="post-meta">
-          <span class="post-date">Published on Oct 15, 2023</span>
-          <span class="post-views">👁️ 1.2k views</span>
-        </div>
-        <div class="post-actions">
-          <button class="action-button edit">Edit</button>
-          <button class="action-button delete">Delete</button>
-        </div>
-      </div>
-
-      <!-- Draft Post Card -->
-      <div class="post-card">
-        <div class="post-status draft">Draft</div>
-        <h2 class="post-title">Advanced CSS Techniques</h2>
-        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
-        <div class="post-meta">
-          <span class="post-date">Last edited Oct 10, 2023</span>
-          <span class="post-views">📝 Draft</span>
-        </div>
-        <div class="post-actions">
-          <button class="action-button edit">Edit</button>
-          <button class="action-button delete">Delete</button>
-        </div>
-      </div>
-
-      <!-- More post cards can be added here -->
-      <div class="post-card">
-        <div class="post-status draft">Draft</div>
-        <h2 class="post-title">Advanced CSS Techniques</h2>
-        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
-        <div class="post-meta">
-          <span class="post-date">Last edited Oct 10, 2023</span>
-          <span class="post-views">📝 Draft</span>
-        </div>
-        <div class="post-actions">
-          <button class="action-button edit">Edit</button>
-          <button class="action-button delete">Delete</button>
-        </div>
-      </div>
-      <div class="post-card">
-        <div class="post-status draft">Draft</div>
-        <h2 class="post-title">Advanced CSS Techniques</h2>
-        <p class="post-excerpt">Master modern CSS with these advanced techniques including Grid, Flexbox, and CSS Variables...</p>
-        <div class="post-meta">
-          <span class="post-date">Last edited Oct 10, 2023</span>
-          <span class="post-views">📝 Draft</span>
-        </div>
-        <div class="post-actions">
-          <button class="action-button edit">Edit</button>
-          <button class="action-button delete">Delete</button>
-        </div>
-      </div>
+     
     </div>
   </main>
 {% endblock %}

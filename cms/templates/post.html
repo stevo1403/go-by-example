@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Post Title - UnGo CMS
+{% endblock %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="/static/css/post.css" />
+{% endblock %}
+{% block script %}
+  <script type="module" src="/static/js/post.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="post hide">
+    <div class="post-header">
+      <div class="post-meta">
+        <div class="post-status published">Published</div>
+        <span class="post-date">Published on Oct 15, 2023</span>
+      </div>
+      <div class="header-actions">
+        <button class="action-button edit">✏️ Edit Post</button>
+        <button class="action-button delete">🗑️ Delete Post</button>
+      </div>
+    </div>
+    <article class="post-content">
+      <h1 class="post-title">Getting Started with Web Development</h1>
+
+      <div class="post-featured-image">
+        <img src="/static/images/post-image-1200x600.svg" alt="Featured image" />
+      </div>
+
+      <div class="post-tags">
+        <span class="tag">Web Development</span>
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+      </div>
+
+      <div class="post-body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+        <h2>Getting Started</h2>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <h3>HTML Basics</h3>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+        <pre>
+          <code>&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First Page&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Hello, World!&lt;/h1&gt; &lt;/body&gt; &lt;/html&gt;</code>
+        </pre>
+
+        <h3>CSS Fundamentals</h3>
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+      </div>
+      <div class="post-stats">
+        <div class="stat">
+          <span class="stat-label">Views</span>
+          <span class="stat-value views">1.2k</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Comments</span>
+          <span class="stat-value comments">24</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Likes</span>
+          <span class="stat-value likes">156</span>
+        </div>
+      </div>
+      <!-- Comments Section -->
+      <div class="post-section comments-section" id="commentsContainer">
+        <h2 class="comments-title" id="commentsTitle">Comments (3)</h2>
+
+        <!-- Add New Comment -->
+        <div class="comment-form-container">
+          <form id="commentForm" class="comment-form">
+            <div class="form-group">
+              <label for="comment-content">Add a Comment</label>
+              <textarea id="comment-content" name="comment" placeholder="Write your comment here..." rows="4" required></textarea>
+            </div>
+            <div class="comment-form-actions">
+              <button type="submit" class="action-button submit">Post Comment</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="commentsList">
+          <!-- Comment Item -->
+          <div class="comment-item">
+            <div class="comment-header">
+              <div class="comment-author">
+                <img src="/static/images/profile-image-32x32.svg" alt="User Avatar" class="comment-avatar" />
+                <span class="author-name">Sarah Johnson</span>
+              </div>
+              <span class="comment-date">Oct 15, 2023</span>
+            </div>
+            <div class="comment-content">This is a fantastic guide! I especially loved the section about CSS Grid. It really helped me understand the concept better. Looking forward to more content like this.</div>
+            <div class="comment-actions">
+              <button class="action-button reply">Reply</button>
+              <button class="action-button delete">Delete</button>
+            </div>
+          </div>
+
+          <!-- Reply to Comment -->
+          <div class="comment-item reply">
+            <div class="comment-header">
+              <div class="comment-author">
+                <img src="/static/images/profile-image-32x32.svg" alt="User Avatar" class="comment-avatar" />
+                <span class="author-name">John (Author)</span>
+              </div>
+              <span class="comment-date">Oct 15, 2023</span>
+            </div>
+            <div class="comment-content">Thanks Sarah! I'm glad you found it helpful. I'll be posting more CSS Grid examples soon.</div>
+            <div class="comment-actions">
+              <button class="action-button delete">Delete</button>
+            </div>
+          </div>
+
+          <!-- Another Comment -->
+          <div class="comment-item">
+            <div class="comment-header">
+              <div class="comment-author">
+                <img src="/static/images/profile-image-32x32.svg" alt="User Avatar" class="comment-avatar" />
+                <span class="author-name">Mike Chen</span>
+              </div>
+              <span class="comment-date">Oct 14, 2023</span>
+            </div>
+            <div class="comment-content">Great article! One question though - could you elaborate more on the use of CSS custom properties? I'm still trying to understand the best practices for using them in large projects.</div>
+            <div class="comment-actions">
+              <button class="action-button reply">Reply</button>
+              <button class="action-button delete">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+{% endblock %}
