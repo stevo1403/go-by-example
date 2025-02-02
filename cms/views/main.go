@@ -61,6 +61,30 @@ func ResetPasswordView(c *gin.Context) {
 	tmpl.ExecuteWriter(pongo2.Context{"title": "Reset Password"}, c.Writer)
 }
 
+func GetPostView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/post.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Blog Post"}, c.Writer)
+}
+
+func EditPostView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/edit-post.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Edit Blog Post"}, c.Writer)
+}
+
+func EditCommentView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/edit-comment.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Edit Comment"}, c.Writer)
+}
+
+func GetCommentView(c *gin.Context) {
+	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/comment.html"))
+	c.Writer.WriteHeader(http.StatusOK)
+	tmpl.ExecuteWriter(pongo2.Context{"title": "Comment to Blog Post"}, c.Writer)
+}
+
 func CreatePostView(c *gin.Context) {
 	tmpl := pongo2.Must(pongo2.FromFile("cms/templates/create-post.html"))
 	c.Writer.WriteHeader(http.StatusOK)
