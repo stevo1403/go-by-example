@@ -26,8 +26,12 @@ func LoadViews() {
 		app.GET("/reset-password", cms.ResetPasswordView)
 		app.GET("/posts", cms.PostListView)
 		app.GET("/posts/new", cms.CreatePostView)
+		app.GET("/posts/:id", cms.GetPostView)
+		app.GET("/posts/:id/edit", cms.EditPostView)
 		app.GET("/comments", cms.CommentListView)
 		app.GET("/comments/new", cms.CreateCommentView)
+		app.GET("/comments/:id", cms.GetCommentView)
+		app.GET("/comments/:id/edit", cms.EditCommentView)
 		app.GET("/media", cms.MediaView)
 		app.GET("/media/new", cms.CreateMediaView)
 		app.GET("/settings", cms.SettingsView)
@@ -70,6 +74,10 @@ func LoadViews() {
 			post_router.PUT("/:id", post.UpdatePost)
 			post_router.DELETE("/:id", post.DeletePost)
 			post_router.PUT("/:id/views", post.IncrementPostViews)
+			post_router.POST("/:id/images", post.UploadImage)
+			post_router.GET("/:id/images", post.GetImages)
+			post_router.GET("/:id/images/:image_id", post.GetImage)
+			post_router.DELETE("/:id/images/:image_id", post.DeleteImage)
 		}
 
 		auth_router := v1.Group("/auth")
